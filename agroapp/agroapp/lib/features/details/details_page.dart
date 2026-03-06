@@ -64,7 +64,7 @@ class DetailsPage extends StatelessWidget {
         borderRadius: BorderRadius.circular(20),
         boxShadow: [
           BoxShadow(
-            color: AppColors.azulUmidade.withOpacity(0.3),
+            color: AppColors.azulUmidade.withValues(alpha: 0.3),
             blurRadius: 24,
             offset: const Offset(0, 8),
           ),
@@ -79,7 +79,7 @@ class DetailsPage extends StatelessWidget {
             child: Icon(
               Icons.water_drop,
               size: 36,
-              color: Colors.white.withOpacity(0.6),
+              color: Colors.white.withValues(alpha: 0.6),
             ),
           ),
           // Conteúdo centralizado
@@ -93,7 +93,7 @@ class DetailsPage extends StatelessWidget {
                   style: GoogleFonts.montserrat(
                     fontSize: 11,
                     letterSpacing: 2,
-                    color: Colors.white.withOpacity(0.7),
+                    color: Colors.white.withValues(alpha: 0.7),
                   ),
                 ),
                 const SizedBox(height: 8),
@@ -113,7 +113,7 @@ class DetailsPage extends StatelessWidget {
                   style: GoogleFonts.lora(
                     fontSize: 14,
                     fontStyle: FontStyle.italic,
-                    color: Colors.white.withOpacity(0.8),
+                    color: Colors.white.withValues(alpha: 0.8),
                   ),
                 ),
                 const SizedBox(height: 4),
@@ -122,7 +122,7 @@ class DetailsPage extends StatelessWidget {
                   fazenda.tempoLeitura,
                   style: GoogleFonts.montserrat(
                     fontSize: 11,
-                    color: Colors.white.withOpacity(0.5),
+                    color: Colors.white.withValues(alpha: 0.5),
                   ),
                 ),
               ],
@@ -138,11 +138,11 @@ class DetailsPage extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: Theme.of(context).colorScheme.surface,
         borderRadius: BorderRadius.circular(20),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.05),
+            color: Colors.black.withValues(alpha: 0.05),
             blurRadius: 10,
             offset: const Offset(0, 4),
           ),
@@ -235,11 +235,11 @@ class DetailsPage extends StatelessWidget {
   Widget _buildCardsListTile() {
     return Container(
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: Theme.of(context).colorScheme.surface,
         borderRadius: BorderRadius.circular(16),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.05),
+            color: Colors.black.withValues(alpha: 0.05),
             blurRadius: 10,
             offset: const Offset(0, 4),
           ),
@@ -284,7 +284,7 @@ class DetailsPage extends StatelessWidget {
         width: 44,
         height: 44,
         decoration: BoxDecoration(
-          color: cor.withOpacity(0.12),
+          color: cor.withValues(alpha: 0.12),
           borderRadius: BorderRadius.circular(12),
         ),
         child: Icon(icone, color: cor, size: 22),
@@ -335,7 +335,7 @@ class DetailsPage extends StatelessWidget {
             borderRadius: BorderRadius.circular(14),
           ),
           elevation: 4,
-          shadowColor: AppColors.fundoEscuro.withOpacity(0.3),
+          shadowColor: AppColors.fundoEscuro.withValues(alpha: 0.3),
         ),
       ),
     );

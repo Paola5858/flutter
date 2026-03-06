@@ -83,10 +83,10 @@ class HomePage extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
-        color: AppColors.verdeOliva.withOpacity(0.08),
+        color: AppColors.verdeOliva.withValues(alpha: 0.08),
         borderRadius: BorderRadius.circular(20),
         border: Border.all(
-          color: AppColors.douradoTrigo.withOpacity(0.3),
+          color: AppColors.douradoTrigo.withValues(alpha: 0.3),
         ),
       ),
       child: Row(
@@ -96,7 +96,7 @@ class HomePage extends StatelessWidget {
             width: 56,
             height: 56,
             decoration: BoxDecoration(
-              color: AppColors.verdeOliva.withOpacity(0.1),
+              color: AppColors.verdeOliva.withValues(alpha: 0.1),
               shape: BoxShape.circle,
             ),
             child: const Icon(
@@ -138,8 +138,8 @@ class HomePage extends StatelessWidget {
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        // Círculo pulsante
-        PulsingDot(color: fazenda.corStatus),
+        // Círculo pulsante (usando PulsatingDot diretamente)
+        PulsatingDot(color: fazenda.corStatus),
         const SizedBox(width: 8),
         Text(
           'Status: ${fazenda.status}',
@@ -188,7 +188,7 @@ class HomePage extends StatelessWidget {
       child: Container(
         padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
         decoration: BoxDecoration(
-          color: fazenda.corUmidade.withOpacity(0.15),
+          color: fazenda.corUmidade.withValues(alpha: 0.15),
           borderRadius: BorderRadius.circular(100),
           border: Border.all(
             color: fazenda.corUmidade,
@@ -228,7 +228,7 @@ class HomePage extends StatelessWidget {
             borderRadius: BorderRadius.circular(14),
           ),
           elevation: 4,
-          shadowColor: AppColors.verdeOliva.withOpacity(0.3),
+          shadowColor: AppColors.verdeOliva.withValues(alpha: 0.3),
         ),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.center,
@@ -305,10 +305,7 @@ class _PulsatingDotState extends State<PulsatingDot>
   }
 }
 
-/// Alias para manter compatibilidade com o nome usado no código
-class PulsingDot extends PulsatingDot {
-  PulsingDot({required Color color, super.key}) : super(color: color);
-}
+/// Alias removido - usar PulsatingDot diretamente
 
 /// Widget reutilizável para chips de dados
 /// Exibe ícone, valor e label em um container estilizado
@@ -333,10 +330,10 @@ class DataChip extends StatelessWidget {
         margin: const EdgeInsets.symmetric(horizontal: 4),
         padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 14),
         decoration: BoxDecoration(
-          color: cor.withOpacity(0.1),
+          color: cor.withValues(alpha: 0.1),
           borderRadius: BorderRadius.circular(14),
           border: Border.all(
-            color: cor.withOpacity(0.25),
+            color: cor.withValues(alpha: 0.25),
           ),
         ),
         child: Column(

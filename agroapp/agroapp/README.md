@@ -1,17 +1,74 @@
-# agroapp
+# 🌱 AgroControl - Monitoramento de Solo em Tempo Real
 
-A new Flutter project.
+App Flutter para monitoramento inteligente de dados agrícolas com interface moderna e elegante.
 
-## Getting Started
+## 📱 Screenshots
 
-This project is a starting point for a Flutter application.
+### Tela Principal (Home)
+- Identidade da fazenda com localização
+- Status da máquina com indicador pulsante
+- Preview rápido de dados (umidade, temperatura, nutrientes)
+- Badge de status da umidade
 
-A few resources to get you started if this is your first Flutter project:
+### Tela de Detalhes
+- Card destacado de umidade com gradiente
+- Dados climáticos completos
+- Lista estilizada de informações
+- Navegação fluida entre telas
 
-- [Learn Flutter](https://docs.flutter.dev/get-started/learn-flutter)
-- [Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Flutter learning resources](https://docs.flutter.dev/reference/learning-resources)
+## 🚀 Como Rodar
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+```bash
+# 1. Instalar dependências
+flutter pub get
+
+# 2. Rodar no Chrome
+flutter run -d chrome
+
+# 3. Rodar no Android/iOS
+flutter run
+```
+
+## 🛠️ Tecnologias Usadas
+
+- **Flutter 3.27+** - Framework multiplataforma
+- **Google Fonts** - Tipografia moderna (Lora, Montserrat, Cormorant Garamond)
+- **Material Design 3** - Design system atualizado
+- **Arquitetura em camadas** - core/, features/, shared/
+
+## 📂 Estrutura do Projeto
+
+```
+lib/
+├── core/
+│   ├── constants/
+│   │   └── app_colors.dart      # Paleta de cores centralizada
+│   └── theme/
+│       └── app_theme.dart       # Tema light/dark
+├── features/
+│   ├── home/
+│   │   └── home_page.dart       # Tela principal
+│   └── details/
+│       └── details_page.dart    # Tela de detalhes
+├── shared/
+│   └── models/
+│       └── fazenda_model.dart   # Modelo de dados
+└── main.dart                     # Entry point
+```
+
+## ✨ Funcionalidades
+
+- ✅ Animação pulsante no status da máquina
+- ✅ Navegação com passagem de objetos
+- ✅ Getters inteligentes no modelo (statusUmidade, corUmidade)
+- ✅ Dark mode adaptativo
+- ✅ Contraste adequado (WCAG 4.5:1)
+- ✅ Simulação de dados em tempo real
+
+## 👨‍💻 Desenvolvido por
+
+Paola - Projeto acadêmico Flutter
+
+## 📄 Licença
+
+MIT License
