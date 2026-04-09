@@ -12,7 +12,8 @@ class ListaJogos extends StatefulWidget {
   const ListaJogos({super.key});
 
   @override
-  State ListaJogos> createState() =>  ListaJogosState();
+  State ListaJogos> @override
+  createState() =>  ListaJogosState();
 }
 
 class  ListaJogosState extends State ListaJogos> {

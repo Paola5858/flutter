@@ -259,7 +259,7 @@ class _AjustesPageState extends State<AjustesPage> {
           Switch(
             value: value,
             onChanged: onChanged,
-            activeColor: const Color(0xFF34C759),
+            activeThumbColor: const Color(0xFF34C759),
           ),
         ],
       ),

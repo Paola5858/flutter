@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'talhao_tile.dart';
-import 'setor_detail_page.dart';
 import 'mapa_page.dart';
 import 'ajustes_page.dart';
 
