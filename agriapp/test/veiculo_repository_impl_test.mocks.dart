@@ -55,7 +55,7 @@ class MockVeiculoRemoteDataSource extends _i1.Mock
           as _i3.Future<void>);
 
   @override
-  _i3.Future<void> updateVeiculo(int? id, _i4.VeiculoModel? veiculo) =>
+  _i3.Future<void> updateVeiculo(String? id, _i4.VeiculoModel? veiculo) =>
       (super.noSuchMethod(
             Invocation.method(#updateVeiculo, [id, veiculo]),
             returnValue: _i3.Future<void>.value(),
@@ -64,7 +64,7 @@ class MockVeiculoRemoteDataSource extends _i1.Mock
           as _i3.Future<void>);
 
   @override
-  _i3.Future<void> deleteVeiculo(int? id) =>
+  _i3.Future<void> deleteVeiculo(String? id) =>
       (super.noSuchMethod(
             Invocation.method(#deleteVeiculo, [id]),
             returnValue: _i3.Future<void>.value(),

@@ -31,35 +31,25 @@ class VeiculoRepositoryImpl implements VeiculoRepository {
   }
 
   @override
-  Future<void> updateVeiculo(int id, VeiculoEntity veiculo) async {
+  Future<void> updateVeiculo(String id, VeiculoEntity veiculo) async {
     final model = _entityToModel(veiculo);
     await remoteDataSource.updateVeiculo(id, model);
   }
 
   @override
-  Future<void> deleteVeiculo(int id) async {
+  Future<void> deleteVeiculo(String id) async {
     await remoteDataSource.deleteVeiculo(id);
   }
 
   VeiculoEntity _modelToEntity(VeiculoModel model) {
-    return VeiculoEntity(
-      id: model.id,
-      descricao: model.descricao,
-      marcaId: model.marcaId,
-      modeloId: model.modeloId,
-      ano: model.ano,
-      horimetro: model.horimetro,
-    );
+    return VeiculoEntity(id: model.id, placa: model.placa, marca: model.marca);
   }
 
   VeiculoModel _entityToModel(VeiculoEntity entity) {
     return VeiculoModel(
       id: entity.id,
-      descricao: entity.descricao,
-      marcaId: entity.marcaId,
-      modeloId: entity.modeloId,
-      ano: entity.ano,
-      horimetro: entity.horimetro,
+      placa: entity.placa,
+      marca: entity.marca,
     );
   }
 }

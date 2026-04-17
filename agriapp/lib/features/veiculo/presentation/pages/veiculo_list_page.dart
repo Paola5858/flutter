@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../blocs/veiculo_bloc.dart';
+import '../blocs/veiculo_event.dart';
+import '../blocs/veiculo_state.dart';
+import 'package:agriapp/features/veiculo/domain/entities/veiculo_entity.dart';
 import '../../../../core/theme/tokens.dart';
 
 class VeiculoListPage extends StatelessWidget {
@@ -58,11 +61,7 @@ class VeiculoListPage extends StatelessWidget {
       floatingActionButton: FloatingActionButton(
         backgroundColor: colors.primary,
         onPressed: () => context.read<VeiculoBloc>().add(FetchVeiculosEvent()),
-        child: Icon(
-          Icons.sync,
-          color: colors.surface,
-          semanticsLabel: 'sincronizar dados',
-        ),
+        child: Icon(Icons.sync, color: colors.surface),
       ),
     );
   }

@@ -26,14 +26,7 @@ void main() {
 
   group('getVeiculos offline fallback', () {
     final tVeiculoModelList = [
-      VeiculoModel(
-        id: 1,
-        descricao: 'Trator JD',
-        marcaId: 1,
-        modeloId: 1,
-        ano: 2020,
-        horimetro: 1000,
-      ),
+      VeiculoModel(id: '1', placa: 'Trator JD', marca: 'John Deere'),
     ];
 
     test('should return cached local data when remote fails', () async {
@@ -49,7 +42,7 @@ void main() {
       final result = await repository.getVeiculos();
 
       // Assert
-      expect(result.first.descricao, equals('Trator JD'));
+      expect(result.first.placa, equals('Trator JD'));
       verify(mockRemoteDataSource.getVeiculos()).called(1);
       verify(mockLocalDataSource.getCachedVeiculos()).called(1);
       verifyNever(mockLocalDataSource.cacheVeiculos(any));
@@ -62,13 +55,13 @@ void main() {
       ).thenAnswer((_) async => tVeiculoModelList);
       when(
         mockLocalDataSource.cacheVeiculos(tVeiculoModelList),
-      ).thenAnswer((_) async => null);
+      ).thenAnswer((_) async {});
 
       // Act
       final result = await repository.getVeiculos();
 
       // Assert
-      expect(result.first.descricao, equals('Trator JD'));
+      expect(result.first.placa, equals('Trator JD'));
       verify(mockRemoteDataSource.getVeiculos()).called(1);
       verify(mockLocalDataSource.cacheVeiculos(tVeiculoModelList)).called(1);
     });

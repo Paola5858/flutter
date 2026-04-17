@@ -59,21 +59,6 @@ class ColorTokenSet extends ThemeExtension<ColorTokenSet> {
       textPrimary: Color.lerp(textPrimary, other.textPrimary, t)!,
     );
   }
-
-  @override
-  ThemeExtension<ColorTokenSet> lerp(
-    ThemeExtension<ColorTokenSet>? other,
-    double t,
-  ) {
-    if (other is! ColorTokenSet) return this;
-    return ColorTokenSet(
-      primary: Color.lerp(primary, other.primary, t)!,
-      accent: Color.lerp(accent, other.accent, t)!,
-      error: Color.lerp(error, other.error, t)!,
-      background: Color.lerp(background, other.background, t)!,
-      surface: Color.lerp(surface, other.surface, t)!,
-    );
-  }
 }
 
 class SpacingTokens {

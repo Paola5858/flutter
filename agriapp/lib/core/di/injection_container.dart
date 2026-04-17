@@ -25,7 +25,7 @@ Future<void> init() async {
 
   // 3. repository
   sl.registerLazySingleton<VeiculoRepository>(
-    () => VeiculoRepositoryImpl(remoteDataSource: sl(), localDataSource: sl()),
+    () => VeiculoRepositoryImpl(sl(), sl()),
   );
 
   // 4. usecases
