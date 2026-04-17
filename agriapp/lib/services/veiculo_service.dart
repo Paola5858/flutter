@@ -1,36 +1,43 @@
-import 'dart:convert';
-import 'package:http/http.dart' as http;
+import 'package:dio/dio.dart';
+import '../core/network/dio_client.dart';
 import '../models/veiculo.dart';
 
-class VeiculoService{
+class VeiculoService {
+  final DioClient dioClient;
 
-  final String url = 'https://x8ki-letl-twmt.n7.xano.io/api:ijUECDHD/veiculo';
+  VeiculoService(this.dioClient);
 
-
-  Future<List<Veiculo>> listar() async{
-    final resposta = await http.get(Uri.parse(url));
-    final List listaJson = jsonDecode(resposta.body);
-    return listaJson.map((item) => Veiculo.fromJson(item)).toList();
+  Future<List<Veiculo>> listar() async {
+    try {
+      final response = await dioClient.instance.get('/veiculo');
+      final List listaJson = response.data;
+      return listaJson.map((item) => Veiculo.fromJson(item)).toList();
+    } on DioException catch (e) {
+      throw Exception('Erro ao listar veículos: ${e.message}');
+    }
   }
 
-
-  Future<void> cadastrar(Veiculo veiculo) async{
-    await http.post(
-      Uri.parse(url),
-      headers: {"Content-Type" : "application/json"},
-      body: jsonEncode(veiculo.toJson),
-    );
+  Future<void> cadastrar(Veiculo veiculo) async {
+    try {
+      await dioClient.instance.post('/veiculo', data: veiculo.toJson());
+    } on DioException catch (e) {
+      throw Exception('Erro ao cadastrar veículo: ${e.message}');
+    }
   }
 
-Future<void> editar(int id, Veiculo veiculo) async{
-  await http.patch(
-    Uri.parse('$url/$id'),
-    headers: {"Content-Type" : "application/json"},
-    body: jsonEncode(veiculo.toJson),
-  );
-}
+  Future<void> editar(int id, Veiculo veiculo) async {
+    try {
+      await dioClient.instance.patch('/veiculo/$id', data: veiculo.toJson());
+    } on DioException catch (e) {
+      throw Exception('Erro ao editar veículo: ${e.message}');
+    }
+  }
 
-Future<void> excluir(int id) async{
- await http.delete(Uri.parse('$url/$id'));
-}
+  Future<void> excluir(int id) async {
+    try {
+      await dioClient.instance.delete('/veiculo/$id');
+    } on DioException catch (e) {
+      throw Exception('Erro ao excluir veículo: ${e.message}');
+    }
+  }
 }

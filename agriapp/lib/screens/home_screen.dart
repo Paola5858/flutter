@@ -1,29 +1,38 @@
 import 'package:flutter/material.dart';
+import '../core/theme/tokens.dart';
 
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
+    final tokens = Theme.of(context).extension<ColorTokenSet>()!;
 
     return Scaffold(
-      appBar: AppBar(title: const Text('Home')),
+      backgroundColor: tokens.background,
+      appBar: AppBar(
+        title: const Text('Menu Principal'),
+        elevation: 0,
+      ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
-        child: GridView.count(
-          crossAxisCount: 2,
-          crossAxisSpacing: 16,
-          mainAxisSpacing: 16,
-          children: [
-            _botaoMenu(context, 'Gerenciar Marcas', Icons.branding_watermark, '/marcas', Colors.blue),
-            _botaoMenu(context, 'Gerenciar Modelos', Icons.directions_car, '/modelos', Colors.green),
-            _botaoMenu(context, 'Gerenciar Veículos', Icons.directions_bus, '/veiculos', Colors.orange),
-          ],
+        child: LayoutBuilder(
+          builder: (context, constraints) {
+            final crossAxisCount = constraints.maxWidth > 600 ? 3 : 2;
+            return GridView.count(
+              crossAxisCount: crossAxisCount,
+              crossAxisSpacing: 16,
+              mainAxisSpacing: 16,
+              children: [
+                _botaoMenu(context, 'Gerenciar Marcas', Icons.branding_watermark, '/marcas', tokens.accent),
+                _botaoMenu(context, 'Gerenciar Modelos', Icons.directions_car, '/modelos', const Color(0xFF2A9D8F)),
+                _botaoMenu(context, 'Gerenciar Veículos', Icons.directions_bus, '/veiculos', const Color(0xFFE76F51)),
+              ],
+            );
+          },
         ),
       ),
     );
-
-    return Container();
   }
 
 

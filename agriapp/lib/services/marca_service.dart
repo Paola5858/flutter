@@ -1,36 +1,43 @@
-import 'dart:convert';
-import 'package:http/http.dart' as http;
+import 'package:dio/dio.dart';
+import '../core/network/dio_client.dart';
 import '../models/marca.dart';
 
-class MarcaService{
+class MarcaService {
+  final DioClient dioClient;
 
-  final String url = 'https://x8ki-letl-twmt.n7.xano.io/api:ijUECDHD/marca';
+  MarcaService(this.dioClient);
 
-
-  Future<List<Marca>> listar() async{
-    final resposta = await http.get(Uri.parse(url));
-    final List listaJson = jsonDecode(resposta.body);
-    return listaJson.map((item) => Marca.fromJson(item)).toList();
+  Future<List<Marca>> listar() async {
+    try {
+      final response = await dioClient.instance.get('/marca');
+      final List listaJson = response.data;
+      return listaJson.map((item) => Marca.fromJson(item)).toList();
+    } on DioException catch (e) {
+      throw Exception('Erro ao listar marcas: ${e.message}');
+    }
   }
 
-
-  Future<void> cadastrar(Marca marca) async{
-    await http.post(
-      Uri.parse(url),
-      headers: {"Content-Type" : "application/json"},
-      body: jsonEncode(marca.toJson),
-    );
+  Future<void> cadastrar(Marca marca) async {
+    try {
+      await dioClient.instance.post('/marca', data: marca.toJson());
+    } on DioException catch (e) {
+      throw Exception('Erro ao cadastrar marca: ${e.message}');
+    }
   }
 
-Future<void> editar(int id, Marca marca) async{
-  await http.patch(
-    Uri.parse('$url/$id'),
-    headers: {"Content-Type" : "application/json"},
-    body: jsonEncode(marca.toJson),
-  );
-}
+  Future<void> editar(int id, Marca marca) async {
+    try {
+      await dioClient.instance.patch('/marca/$id', data: marca.toJson());
+    } on DioException catch (e) {
+      throw Exception('Erro ao editar marca: ${e.message}');
+    }
+  }
 
-Future<void> excluir(int id) async{
- await http.delete(Uri.parse('$url/$id'));
-}
+  Future<void> excluir(int id) async {
+    try {
+      await dioClient.instance.delete('/marca/$id');
+    } on DioException catch (e) {
+      throw Exception('Erro ao excluir marca: ${e.message}');
+    }
+  }
 }
