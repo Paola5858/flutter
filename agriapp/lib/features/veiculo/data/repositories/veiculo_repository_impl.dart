@@ -1,12 +1,14 @@
 import '../../domain/repositories/veiculo_repository.dart';
 import '../../domain/entities/veiculo_entity.dart';
 import '../datasources/remote/veiculo_remote_datasource.dart';
+import '../datasources/local/veiculo_local_datasource.dart';
 import '../models/veiculo_model.dart';
 
 class VeiculoRepositoryImpl implements VeiculoRepository {
   final VeiculoRemoteDataSource remoteDataSource;
+  final VeiculoLocalDataSource localDataSource;
 
-  VeiculoRepositoryImpl(this.remoteDataSource);
+  VeiculoRepositoryImpl(this.remoteDataSource, this.localDataSource);
 
   @override
   Future<List<VeiculoEntity>> getVeiculos() async {

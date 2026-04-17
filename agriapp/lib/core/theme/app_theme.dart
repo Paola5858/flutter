@@ -5,21 +5,18 @@ extension AppTheme on ThemeData {
   static ThemeData light() {
     return ThemeData(
       useMaterial3: true,
-      colorScheme:
-          ColorScheme.fromSeed(
-            seedColor: ColorTokens.primary,
-            brightness: Brightness.light,
-          ).copyWith(
-            surface: ColorTokens.surface,
-            background: ColorTokens.background,
-          ),
+      colorScheme: ColorScheme.fromSeed(
+        seedColor: ColorTokens.primary,
+        brightness: Brightness.light,
+      ).copyWith(surface: ColorTokens.surface),
       extensions: <ThemeExtension<dynamic>>[
-        const ColorTokenSet(
+        ColorTokenSet(
           primary: ColorTokens.primary,
           accent: ColorTokens.accent,
           error: ColorTokens.error,
           background: ColorTokens.background,
           surface: ColorTokens.surface,
+          textPrimary: Colors.black,
         ),
       ],
       appBarTheme: const AppBarTheme(
@@ -46,14 +43,16 @@ extension AppTheme on ThemeData {
       colorScheme: ColorScheme.fromSeed(
         seedColor: ColorTokens.accent,
         brightness: Brightness.dark,
+        surface: const Color(0xFF1E1E1E),
       ),
       extensions: <ThemeExtension<dynamic>>[
         const ColorTokenSet(
           primary: ColorTokens.accent,
           accent: ColorTokens.primary,
           error: ColorTokens.error,
-          background: const Color(0xFF121212),
-          surface: const Color(0xFF1E1E1E),
+          background: Color(0xFF121212),
+          surface: Color(0xFF1E1E1E),
+          textPrimary: Color(0xFFFFFFFF),
         ),
       ],
     );

@@ -1,12 +1,31 @@
-import 'package:freezed_annotation/freezed_annotation.dart';
+import 'package:equatable/equatable.dart';
 import '../../domain/entities/veiculo_entity.dart';
 
-part 'veiculo_state.freezed.dart';
+abstract class VeiculoState extends Equatable {
+  const VeiculoState();
 
-@freezed
-class VeiculoState with _$VeiculoState {
-  const factory VeiculoState.initial() = _Initial;
-  const factory VeiculoState.loading() = _Loading;
-  const factory VeiculoState.loaded(List<VeiculoEntity> veiculos) = _Loaded;
-  const factory VeiculoState.error(String message) = _Error;
+  @override
+  List<Object> get props => [];
+}
+
+class VeiculoInitial extends VeiculoState {}
+
+class VeiculoLoading extends VeiculoState {}
+
+class VeiculoLoaded extends VeiculoState {
+  final List<VeiculoEntity> veiculos;
+
+  const VeiculoLoaded(this.veiculos);
+
+  @override
+  List<Object> get props => [veiculos];
+}
+
+class VeiculoError extends VeiculoState {
+  final String message;
+
+  const VeiculoError(this.message);
+
+  @override
+  List<Object> get props => [message];
 }
