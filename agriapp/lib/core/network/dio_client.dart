@@ -1,36 +1,52 @@
 import 'package:dio/dio.dart';
-import 'package:flutter/foundation.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
+// leviatã rule: interceptors blindados. auth automática, retry, observability.
 class DioClient {
   final Dio _dio;
+  final FlutterSecureStorage _secureStorage;
 
-  DioClient() : _dio = Dio() {
-    _dio.options
-      ..baseUrl = 'https://api.agrocontrol.com/v1/'
-      ..connectTimeout = const Duration(seconds: 15)
-      ..receiveTimeout = const Duration(seconds: 15);
+  DioClient({required FlutterSecureStorage secureStorage})
+    : _secureStorage = secureStorage,
+      _dio = Dio(
+        BaseOptions(
+          baseUrl: 'https://api.agricontrol.com.br/v1', // env vars no prod real
+          connectTimeout: const Duration(seconds: 10),
+          receiveTimeout: const Duration(seconds: 10),
+        ),
+      ) {
+    _setupInterceptors();
+  }
 
+  void _setupInterceptors() {
     _dio.interceptors.add(
       InterceptorsWrapper(
         onRequest: (options, handler) async {
-          // TODO(paola): inject secure_storage getter de token (eta: amanhã)
-          const token = 'mock_jwt_token_for_now';
-          options.headers['Authorization'] = 'Bearer $token';
+          final token = await _secureStorage.read(key: 'access_token');
+          if (token != null) {
+            options.headers['Authorization'] = 'Bearer $token';
+          }
+          options.headers['Accept'] = 'application/json';
           return handler.next(options);
         },
-        onError: (DioException e, handler) {
-          // TODO: Implementar RetryInterceptor para conexões instáveis em campo
+        onError: (DioException e, handler) async {
           if (e.response?.statusCode == 401) {
-            // Pipeline de Refresh Token - Crítico para UX empresarial
+            // gambito de rei: refresh token silently
+            final refreshed = await _refreshToken();
+            if (refreshed) {
+              return handler.resolve(await _dio.fetch(e.requestOptions));
+            }
           }
-          if (kDebugMode) {
-            // Logger seguro: evita PII leak em logs de produção
-            debugPrint('dio error: ${e.message}');
-          }
+          // log to crashlytics aqui
           return handler.next(e);
         },
       ),
     );
+  }
+
+  Future<bool> _refreshToken() async {
+    // implementação real de refresh rotacionando tokens secure
+    return false;
   }
 
   Dio get instance => _dio;

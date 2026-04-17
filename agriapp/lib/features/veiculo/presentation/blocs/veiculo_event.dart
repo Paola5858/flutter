@@ -1,10 +1,8 @@
-import 'package:equatable/equatable.dart';
+import 'package:freezed_annotation/freezed_annotation.dart';
 
-abstract class VeiculoEvent extends Equatable {
-  const VeiculoEvent();
+part 'veiculo_event.freezed.dart';
 
-  @override
-  List<Object> get props => [];
+@freezed
+class VeiculoEvent with _$VeiculoEvent {
+  const factory VeiculoEvent.refresh() = _Refresh;
 }
-
-class FetchVeiculosEvent extends VeiculoEvent {}

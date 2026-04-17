@@ -1,61 +1,58 @@
 import 'package:flutter/material.dart';
 
-class ColorTokens {
-  static const primary = Color(0xFF01696F); // teal nexus senai
-  static const accent = Color(0xFF00A896);
-  static const error = Color(0xFFD62828);
-  static const background = Color(0xFFF7F9F9);
-  static const surface = Color(0xFFFFFFFF);
-}
-
-class ColorTokenSet extends ThemeExtension<ColorTokenSet> {
+// leviatã rule: hsl semantic tokens, nada de hex hardcoded espalhado.
+class ColorTokens extends ThemeExtension<ColorTokens> {
   final Color primary;
-  final Color accent;
-  final Color error;
-  final Color background;
   final Color surface;
+  final Color error;
   final Color textPrimary;
 
-  const ColorTokenSet({
+  const ColorTokens({
     required this.primary,
-    required this.accent,
-    required this.error,
-    required this.background,
     required this.surface,
+    required this.error,
     required this.textPrimary,
   });
 
+  factory ColorTokens.light() => const ColorTokens(
+    primary: Color(0xFF01696F), // teal senai araçatuba vibe
+    surface: Color(0xFFFAFAFA),
+    error: Color(0xFFB00020),
+    textPrimary: Color(0xFF121212),
+  );
+
+  factory ColorTokens.dark() => const ColorTokens(
+    primary: Color(0xFF4DB6AC),
+    surface: Color(0xFF121212),
+    error: Color(0xFFCF6679),
+    textPrimary: Color(0xFFE0E0E0),
+  );
+
   @override
-  ThemeExtension<ColorTokenSet> copyWith({
+  ThemeExtension<ColorTokens> copyWith({
     Color? primary,
-    Color? accent,
-    Color? error,
-    Color? background,
     Color? surface,
+    Color? error,
     Color? textPrimary,
   }) {
-    return ColorTokenSet(
+    return ColorTokens(
       primary: primary ?? this.primary,
-      accent: accent ?? this.accent,
-      error: error ?? this.error,
-      background: background ?? this.background,
       surface: surface ?? this.surface,
+      error: error ?? this.error,
       textPrimary: textPrimary ?? this.textPrimary,
     );
   }
 
   @override
-  ThemeExtension<ColorTokenSet> lerp(
-    ThemeExtension<ColorTokenSet>? other,
+  ThemeExtension<ColorTokens> lerp(
+    ThemeExtension<ColorTokens>? other,
     double t,
   ) {
-    if (other is! ColorTokenSet) return this;
-    return ColorTokenSet(
+    if (other is! ColorTokens) return this;
+    return ColorTokens(
       primary: Color.lerp(primary, other.primary, t)!,
-      accent: Color.lerp(accent, other.accent, t)!,
-      error: Color.lerp(error, other.error, t)!,
-      background: Color.lerp(background, other.background, t)!,
       surface: Color.lerp(surface, other.surface, t)!,
+      error: Color.lerp(error, other.error, t)!,
       textPrimary: Color.lerp(textPrimary, other.textPrimary, t)!,
     );
   }

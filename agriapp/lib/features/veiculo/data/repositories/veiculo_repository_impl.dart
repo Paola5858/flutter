@@ -1,8 +1,8 @@
-import '../../domain/repositories/veiculo_repository.dart';
-import '../../domain/entities/veiculo_entity.dart';
-import '../datasources/remote/veiculo_remote_datasource.dart';
-import '../datasources/local/veiculo_local_datasource.dart';
-import '../models/veiculo_model.dart';
+import 'package:agriapp/features/veiculo/domain/repositories/veiculo_repository.dart';
+import 'package:agriapp/features/veiculo/domain/entities/veiculo_entity.dart';
+import 'package:agriapp/features/veiculo/data/datasources/remote/veiculo_remote_datasource.dart';
+import 'package:agriapp/features/veiculo/data/datasources/local/veiculo_local_datasource.dart';
+import 'package:agriapp/features/veiculo/data/models/veiculo_model.dart';
 
 class VeiculoRepositoryImpl implements VeiculoRepository {
   final VeiculoRemoteDataSource remoteDataSource;

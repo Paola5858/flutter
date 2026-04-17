@@ -1,10 +1,12 @@
 import 'package:get_it/get_it.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:hive_flutter/hive_flutter.dart';
 import '../../core/network/dio_client.dart';
 import '../../core/local/hive_service.dart';
 import '../../features/veiculo/data/datasources/remote/veiculo_remote_datasource.dart';
 import '../../features/veiculo/data/datasources/local/veiculo_local_datasource.dart';
-import '../../features/veiculo/data/repositories/veiculo_repository_impl.dart';
-import '../../features/veiculo/domain/repositories/veiculo_repository.dart';
+import 'package:agriapp/features/veiculo/data/repositories/veiculo_repository_impl.dart';
+import 'package:agriapp/features/veiculo/domain/repositories/veiculo_repository.dart';
 import '../../features/veiculo/domain/usecases/get_veiculos.dart';
 import '../../features/veiculo/presentation/blocs/veiculo_bloc.dart';
 
@@ -12,7 +14,9 @@ final sl = GetIt.instance; // sl = service locator
 
 Future<void> init() async {
   // 1. core
-  sl.registerLazySingleton(() => DioClient());
+  await Hive.initFlutter();
+  sl.registerLazySingleton(() => const FlutterSecureStorage());
+  sl.registerLazySingleton(() => DioClient(secureStorage: sl()));
   sl.registerLazySingleton(() => HiveService());
 
   // 2. data sources
