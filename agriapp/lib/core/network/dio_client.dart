@@ -19,11 +19,12 @@ class DioClient {
           return handler.next(options);
         },
         onError: (DioException e, handler) {
+          // TODO: Implementar RetryInterceptor para conexões instáveis em campo
           if (e.response?.statusCode == 401) {
-            // trigger refresh token pipeline
+            // Pipeline de Refresh Token - Crítico para UX empresarial
           }
           if (kDebugMode) {
-            // sem pii leak no crashlytics prod
+            // Logger seguro: evita PII leak em logs de produção
             debugPrint('dio error: ${e.message}');
           }
           return handler.next(e);

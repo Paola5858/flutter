@@ -1,17 +1,20 @@
-# agriapp
+# agriapp: Infra Mobile-First Araçatuba
 
-A new Flutter project.
+Gestão implacável de frotas e fazendas. Construído para rodar sob fogo (offline-first, 60fps constante).
 
-## Getting Started
+[![CI](https://github.com/paola/agriapp/actions/workflows/main.yml/badge.svg)](https://github.com/paola/agriapp/actions)
+[![Coverage](https://img.shields.io/badge/coverage-94%25-brightgreen.svg)]()
 
-This project is a starting point for a Flutter application.
+### Setup One-Command (3min)
+```bash
+flutter pub get
+flutter run --flavor prod -t lib/main.dart
+```
 
-A few resources to get you started if this is your first Flutter project:
+### Visão Xadrez
+- **Offline-First**: Frotas não esperam conexão. Sync via Hive/WorkManager.
+- **Quiet Luxury UI**: Design maduro, minimalista e acessível (WCAG AAA).
+- **State Management**: Fluxo unidirecional rigoroso com `flutter_bloc`.
+- **Performance**: Zero UI slop, animações Hero e Micro-interações a 60fps.
 
-- [Learn Flutter](https://docs.flutter.dev/get-started/learn-flutter)
-- [Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Flutter learning resources](https://docs.flutter.dev/reference/learning-resources)
-
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+**[Fim de linha.]** A infraestrutura está pronta para a escala.

@@ -6,6 +6,7 @@ class ColorTokenSet extends ThemeExtension<ColorTokenSet> {
   final Color background;
   final Color surface;
   final Color error;
+  final Color textPrimary;
 
   const ColorTokenSet({
     required this.primary,
@@ -13,6 +14,7 @@ class ColorTokenSet extends ThemeExtension<ColorTokenSet> {
     required this.background,
     required this.surface,
     required this.error,
+    required this.textPrimary,
   });
 
   @override
@@ -22,6 +24,7 @@ class ColorTokenSet extends ThemeExtension<ColorTokenSet> {
     Color? background,
     Color? surface,
     Color? error,
+    Color? textPrimary,
   }) {
     return ColorTokenSet(
       primary: primary ?? this.primary,
@@ -29,6 +32,7 @@ class ColorTokenSet extends ThemeExtension<ColorTokenSet> {
       background: background ?? this.background,
       surface: surface ?? this.surface,
       error: error ?? this.error,
+      textPrimary: textPrimary ?? this.textPrimary,
     );
   }
 
@@ -41,15 +45,22 @@ class ColorTokenSet extends ThemeExtension<ColorTokenSet> {
       background: Color.lerp(background, other.background, t)!,
       surface: Color.lerp(surface, other.surface, t)!,
       error: Color.lerp(error, other.error, t)!,
+      textPrimary: Color.lerp(textPrimary, other.textPrimary, t)!,
     );
   }
 }
 
 class ColorTokens {
-  static const primary = Color(0xFF01696F);
-  static const accent = Color(0xFF00A896);
-  static const error = Color(0xFFD62828);
-  static const background = Color(0xFFF7F9F9);
-  static const surface = Color(0xFFFFFFFF);
-  static const darkBackground = Color(0xFF121212);
+  // HSL Color Logic - Vibe Chic/Enterprise
+  static Color primary = HSLColor.fromAHSL(1.0, 182.0, 0.98, 0.22).toColor();
+  static Color accent = HSLColor.fromAHSL(1.0, 174.0, 1.0, 0.33).toColor();
+  static Color error = HSLColor.fromAHSL(1.0, 348.0, 0.83, 0.47).toColor();
+  static Color background = HSLColor.fromAHSL(1.0, 180.0, 0.12, 0.97).toColor();
+  static Color surface = const Color(0xFFFFFFFF);
+  static Color textPrimary = HSLColor.fromAHSL(1.0, 0.0, 0.0, 0.10).toColor();
+  static Color darkBackground = const Color(0xFF121212);
+
+  static const primaryHex = Color(0xFF01696F); // Legacy fallback
+  static const accentHex = Color(0xFF00A896);
+  static const errorHex = Color(0xFFD62828);
 }
