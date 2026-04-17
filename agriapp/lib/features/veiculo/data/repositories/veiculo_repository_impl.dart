@@ -12,8 +12,16 @@ class VeiculoRepositoryImpl implements VeiculoRepository {
 
   @override
   Future<List<VeiculoEntity>> getVeiculos() async {
-    final models = await remoteDataSource.getVeiculos();
-    return models.map((model) => _modelToEntity(model)).toList();
+    try {
+      final models = await remoteDataSource.getVeiculos();
+      // Cache the data locally
+      await localDataSource.cacheVeiculos(models);
+      return models.map(_modelToEntity).toList();
+    } catch (e) {
+      // Fallback to cached local data
+      final cachedModels = await localDataSource.getCachedVeiculos();
+      return cachedModels.map(_modelToEntity).toList();
+    }
   }
 
   @override

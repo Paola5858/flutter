@@ -1,5 +1,5 @@
-import '../../../../core/local/hive_service.dart';
-import '../models/veiculo_model.dart';
+import 'package:agriapp/core/local/hive_service.dart';
+import 'package:agriapp/features/veiculo/data/models/veiculo_model.dart';
 
 abstract class VeiculoLocalDataSource {
   Future<List<VeiculoModel>> getCachedVeiculos();
@@ -15,7 +15,9 @@ class VeiculoLocalDataSourceImpl implements VeiculoLocalDataSource {
   Future<List<VeiculoModel>> getCachedVeiculos() async {
     final cached = hiveService.get('veiculos');
     if (cached != null && cached is List) {
-      return cached.map((json) => VeiculoModel.fromJson(json)).toList();
+      return cached
+          .map((json) => VeiculoModel.fromJson(json as Map<String, dynamic>))
+          .toList();
     }
     return [];
   }

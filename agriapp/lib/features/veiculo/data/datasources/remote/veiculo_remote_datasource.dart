@@ -1,5 +1,5 @@
 import 'package:dio/dio.dart';
-import '../../../../core/network/dio_client.dart';
+import 'package:agriapp/core/network/dio_client.dart';
 import '../../models/veiculo_model.dart';
 
 abstract class VeiculoRemoteDataSource {

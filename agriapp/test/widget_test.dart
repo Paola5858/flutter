@@ -15,6 +15,6 @@ void main() {
     await tester.pumpWidget(const AgriApp());
 
     // Verify that the app title is present.
-    expect(find.text('AgriApp — Menu Principal'), findsOneWidget);
+    expect(find.text('AgriApp — Gestão de Frotas'), findsOneWidget);
   });
 }
