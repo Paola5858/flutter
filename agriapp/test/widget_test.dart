@@ -9,7 +9,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:agriapp/main.dart';
 import 'package:agriapp/features/veiculo/presentation/pages/veiculo_list_page.dart';
-import '../lib/core/di/injection_container.dart' as di;
+import 'package:agriapp/core/di/injection_container.dart' as di;
 
 void main() {
   testWidgets('App smoke test', (WidgetTester tester) async {
