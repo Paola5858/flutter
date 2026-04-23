@@ -6,12 +6,14 @@ class ColorTokens extends ThemeExtension<ColorTokens> {
   final Color surface;
   final Color error;
   final Color textPrimary;
+  final List<BoxShadow> cardShadow;
 
   const ColorTokens({
     required this.primary,
     required this.surface,
     required this.error,
     required this.textPrimary,
+    required this.cardShadow,
   });
 
   factory ColorTokens.light() => const ColorTokens(
@@ -19,6 +21,13 @@ class ColorTokens extends ThemeExtension<ColorTokens> {
     surface: Color(0xFFFAFAFA),
     error: Color(0xFFB00020),
     textPrimary: Color(0xFF121212),
+    cardShadow: [
+      BoxShadow(
+        color: Color(0x0A000000),
+        blurRadius: 20,
+        offset: Offset(0, 10),
+      ),
+    ],
   );
 
   factory ColorTokens.dark() => const ColorTokens(
@@ -26,6 +35,13 @@ class ColorTokens extends ThemeExtension<ColorTokens> {
     surface: Color(0xFF121212),
     error: Color(0xFFCF6679),
     textPrimary: Color(0xFFE0E0E0),
+    cardShadow: [
+      BoxShadow(
+        color: Color(0x40000000),
+        blurRadius: 24,
+        offset: Offset(0, 12),
+      ),
+    ],
   );
 
   @override
@@ -34,12 +50,14 @@ class ColorTokens extends ThemeExtension<ColorTokens> {
     Color? surface,
     Color? error,
     Color? textPrimary,
+    List<BoxShadow>? cardShadow,
   }) {
     return ColorTokens(
       primary: primary ?? this.primary,
       surface: surface ?? this.surface,
       error: error ?? this.error,
       textPrimary: textPrimary ?? this.textPrimary,
+      cardShadow: cardShadow ?? this.cardShadow,
     );
   }
 
@@ -54,6 +72,7 @@ class ColorTokens extends ThemeExtension<ColorTokens> {
       surface: Color.lerp(surface, other.surface, t)!,
       error: Color.lerp(error, other.error, t)!,
       textPrimary: Color.lerp(textPrimary, other.textPrimary, t)!,
+      cardShadow: cardShadow, // shadows don't lerp easily, keep current
     );
   }
 }

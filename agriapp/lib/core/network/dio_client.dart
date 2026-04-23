@@ -2,6 +2,7 @@ import 'package:dio/dio.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
 // leviatã rule: interceptors blindados. auth automática, retry, observability.
+// a11y: garantindo que falhas de rede sejam reportadas semanticamente.
 class DioClient {
   final Dio _dio;
   final FlutterSecureStorage _secureStorage;
@@ -32,9 +33,14 @@ class DioClient {
         onError: (DioException e, handler) async {
           if (e.response?.statusCode == 401) {
             // gambito de rei: refresh token silently
-            final refreshed = await _refreshToken();
-            if (refreshed) {
-              return handler.resolve(await _dio.fetch(e.requestOptions));
+            try {
+              final refreshed = await _refreshToken();
+              if (refreshed) {
+                return handler.resolve(await _dio.fetch(e.requestOptions));
+              }
+            } catch (err) {
+              // se falhar o refresh, logout forçado ou redirect login
+              return handler.next(e);
             }
           }
           // log to crashlytics aqui
@@ -46,6 +52,24 @@ class DioClient {
 
   Future<bool> _refreshToken() async {
     // implementação real de refresh rotacionando tokens secure
+    final refreshToken = await _secureStorage.read(key: 'refresh_token');
+    if (refreshToken == null) return false;
+
+    try {
+      final response = await _dio.post(
+        '/auth/refresh',
+        data: {'refresh': refreshToken},
+      );
+      if (response.statusCode == 200) {
+        final newToken = response.data['access'];
+        final newRefresh = response.data['refresh'];
+        await _secureStorage.write(key: 'access_token', value: newToken);
+        await _secureStorage.write(key: 'refresh_token', value: newRefresh);
+        return true;
+      }
+    } catch (_) {
+      return false;
+    }
     return false;
   }
 
