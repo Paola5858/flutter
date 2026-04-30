@@ -7,6 +7,7 @@ class ColorTokens extends ThemeExtension<ColorTokens> {
   final Color error;
   final Color textPrimary;
   final List<BoxShadow> cardShadow;
+  final double radiusAsymmetric;
 
   const ColorTokens({
     required this.primary,
@@ -14,6 +15,7 @@ class ColorTokens extends ThemeExtension<ColorTokens> {
     required this.error,
     required this.textPrimary,
     required this.cardShadow,
+    required this.radiusAsymmetric,
   });
 
   factory ColorTokens.light() => const ColorTokens(
@@ -28,6 +30,7 @@ class ColorTokens extends ThemeExtension<ColorTokens> {
         offset: Offset(0, 10),
       ),
     ],
+    radiusAsymmetric: 8.0,
   );
 
   factory ColorTokens.dark() => const ColorTokens(
@@ -42,6 +45,7 @@ class ColorTokens extends ThemeExtension<ColorTokens> {
         offset: Offset(0, 12),
       ),
     ],
+    radiusAsymmetric: 8.0,
   );
 
   @override
@@ -51,6 +55,7 @@ class ColorTokens extends ThemeExtension<ColorTokens> {
     Color? error,
     Color? textPrimary,
     List<BoxShadow>? cardShadow,
+    double? radiusAsymmetric,
   }) {
     return ColorTokens(
       primary: primary ?? this.primary,
@@ -58,6 +63,7 @@ class ColorTokens extends ThemeExtension<ColorTokens> {
       error: error ?? this.error,
       textPrimary: textPrimary ?? this.textPrimary,
       cardShadow: cardShadow ?? this.cardShadow,
+      radiusAsymmetric: radiusAsymmetric ?? this.radiusAsymmetric,
     );
   }
 
@@ -73,6 +79,7 @@ class ColorTokens extends ThemeExtension<ColorTokens> {
       error: Color.lerp(error, other.error, t)!,
       textPrimary: Color.lerp(textPrimary, other.textPrimary, t)!,
       cardShadow: cardShadow, // shadows don't lerp easily, keep current
+      radiusAsymmetric: t < 0.5 ? radiusAsymmetric : other.radiusAsymmetric,
     );
   }
 }

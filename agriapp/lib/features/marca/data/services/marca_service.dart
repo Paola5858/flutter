@@ -2,7 +2,7 @@ import '../../domain/entities/marca_entity.dart';
 
 class MarcaService {
   // Simulating a service, in real app this would use repository
-  List<Marca> _marcas = [];
+  final List<Marca> _marcas = [];
 
   Future<Marca> cadastrarMarca(Marca marca) async {
     // Simulate API call
