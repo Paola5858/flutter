@@ -16,8 +16,10 @@ Future<void> init() async {
   // 1. core
   await Hive.initFlutter();
   sl.registerLazySingleton(() => const FlutterSecureStorage());
-  sl.registerLazySingleton(() => DioClient(secureStorage: sl()));
   sl.registerLazySingleton(() => HiveService());
+  sl.registerLazySingleton(
+    () => DioClient(secureStorage: sl(), hiveService: sl()),
+  );
 
   // 2. data sources
   sl.registerLazySingleton<VeiculoRemoteDataSource>(

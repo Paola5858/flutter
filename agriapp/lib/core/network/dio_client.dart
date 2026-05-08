@@ -1,3 +1,6 @@
+import 'package:agriapp/core/local/hive_service.dart';
+import 'package:agriapp/core/network/http_client_adapter.dart';
+import 'package:agriapp/core/network/sync_interceptor.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
@@ -6,20 +9,38 @@ import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 class DioClient {
   final Dio _dio;
   final FlutterSecureStorage _secureStorage;
+  final HiveService _hiveService;
 
-  DioClient({required FlutterSecureStorage secureStorage})
-    : _secureStorage = secureStorage,
-      _dio = Dio(
-        BaseOptions(
-          baseUrl: 'https://api.agricontrol.com.br/v1', // env vars no prod real
-          connectTimeout: const Duration(seconds: 10),
-          receiveTimeout: const Duration(seconds: 10),
-        ),
-      ) {
+  static const _expectedPinnedCertificateSha256 = String.fromEnvironment(
+    'API_CERT_SHA256',
+    defaultValue: '',
+  );
+
+  DioClient({
+    required FlutterSecureStorage secureStorage,
+    required HiveService hiveService,
+  }) : _secureStorage = secureStorage,
+       _hiveService = hiveService,
+       _dio = Dio(
+         BaseOptions(
+           baseUrl:
+               'https://api.agricontrol.com.br/v1', // env vars no prod real
+           connectTimeout: const Duration(seconds: 10),
+           receiveTimeout: const Duration(seconds: 10),
+         ),
+       ) {
+    final adapter = createPinnedHttpClientAdapter(
+      _expectedPinnedCertificateSha256,
+    );
+    if (adapter != null) {
+      _dio.httpClientAdapter = adapter;
+    }
     _setupInterceptors();
   }
 
   void _setupInterceptors() {
+    _dio.interceptors.add(OfflineSyncInterceptor(_hiveService));
+
     _dio.interceptors.add(
       InterceptorsWrapper(
         onRequest: (options, handler) async {
@@ -32,18 +53,15 @@ class DioClient {
         },
         onError: (DioException e, handler) async {
           if (e.response?.statusCode == 401) {
-            // gambito de rei: refresh token silently
             try {
               final refreshed = await _refreshToken();
               if (refreshed) {
                 return handler.resolve(await _dio.fetch(e.requestOptions));
               }
-            } catch (err) {
-              // se falhar o refresh, logout forçado ou redirect login
+            } catch (_) {
               return handler.next(e);
             }
           }
-          // log to crashlytics aqui
           return handler.next(e);
         },
       ),
@@ -51,7 +69,6 @@ class DioClient {
   }
 
   Future<bool> _refreshToken() async {
-    // implementação real de refresh rotacionando tokens secure
     final refreshToken = await _secureStorage.read(key: 'refresh_token');
     if (refreshToken == null) return false;
 

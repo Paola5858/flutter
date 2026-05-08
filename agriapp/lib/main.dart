@@ -1,17 +1,41 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:sentry_flutter/sentry_flutter.dart';
+
+import 'core/background/sync_manager.dart';
 import 'core/di/injection_container.dart' as di;
+import 'core/local/hive_service.dart';
 import 'core/theme/app_theme.dart';
+import 'core/utils/app_bloc_observer.dart';
 import 'features/veiculo/presentation/blocs/veiculo_bloc.dart';
 import 'features/veiculo/presentation/pages/veiculo_list_page.dart';
 
-void main() async {
-  // Garante que o binding do Flutter esteja pronto antes de carregar a infra
+Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
-
-  // Inicializa o Service Locator (Dio, Services, Repositories)
   await di.init();
+  await di.sl<HiveService>().init();
 
+  final dsn = const String.fromEnvironment('SENTRY_DSN', defaultValue: '');
+  if (dsn.isNotEmpty) {
+    await SentryFlutter.init((options) {
+      options.dsn = dsn;
+      options.tracesSampleRate = 0.1;
+      options.environment = const String.fromEnvironment(
+        'FLUTTER_ENV',
+        defaultValue: 'production',
+      );
+    }, appRunner: () => _runApp());
+  } else {
+    await _runApp();
+  }
+}
+
+Future<void> _runApp() async {
+  if (!const bool.fromEnvironment('FLUTTER_TEST')) {
+    await SyncManager.initialize();
+  }
+
+  Bloc.observer = AppBlocObserver();
   runApp(const AgriApp());
 }
 

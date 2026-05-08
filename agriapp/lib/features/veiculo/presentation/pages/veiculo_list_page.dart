@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../../core/theme/tokens.dart';
+import 'veiculo_form_page.dart';
 import '../blocs/veiculo_bloc.dart';
 import '../blocs/veiculo_event.dart';
 import '../blocs/veiculo_state.dart';
@@ -15,6 +16,15 @@ class VeiculoListPage extends StatelessWidget {
 
     return Scaffold(
       backgroundColor: tokens.surface,
+      floatingActionButton: FloatingActionButton(
+        key: const Key('add_veiculo_btn'),
+        onPressed: () {
+          Navigator.of(
+            context,
+          ).push(MaterialPageRoute(builder: (_) => const VeiculoFormPage()));
+        },
+        child: const Icon(Icons.add),
+      ),
       body: SafeArea(
         child: LayoutBuilder(
           builder: (context, constraints) {
