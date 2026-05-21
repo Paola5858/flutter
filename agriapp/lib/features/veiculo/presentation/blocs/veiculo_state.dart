@@ -9,4 +9,5 @@ class VeiculoState with _$VeiculoState {
   const factory VeiculoState.loading() = _Loading;
   const factory VeiculoState.error(String message) = _Error;
   const factory VeiculoState.loaded(List<VeiculoEntity> veiculos) = _Loaded;
+  const factory VeiculoState.success() = _Success;
 }

@@ -5,15 +5,16 @@ import '../../core/network/dio_client.dart';
 import '../../core/local/hive_service.dart';
 import '../../features/veiculo/data/datasources/remote/veiculo_remote_datasource.dart';
 import '../../features/veiculo/data/datasources/local/veiculo_local_datasource.dart';
+import '../../features/marca/data/services/marca_service.dart';
 import 'package:agriapp/features/veiculo/data/repositories/veiculo_repository_impl.dart';
 import 'package:agriapp/features/veiculo/domain/repositories/veiculo_repository.dart';
 import '../../features/veiculo/domain/usecases/get_veiculos.dart';
 import '../../features/veiculo/presentation/blocs/veiculo_bloc.dart';
+import '../../features/marca/presentation/blocs/marca_bloc.dart';
 
-final sl = GetIt.instance; // sl = service locator
+final sl = GetIt.instance;
 
 Future<void> init() async {
-  // 1. core
   await Hive.initFlutter();
   sl.registerLazySingleton(() => const FlutterSecureStorage());
   sl.registerLazySingleton(() => HiveService());
@@ -21,7 +22,6 @@ Future<void> init() async {
     () => DioClient(secureStorage: sl(), hiveService: sl()),
   );
 
-  // 2. data sources
   sl.registerLazySingleton<VeiculoRemoteDataSource>(
     () => VeiculoRemoteDataSourceImpl(sl()),
   );
@@ -29,14 +29,13 @@ Future<void> init() async {
     () => VeiculoLocalDataSourceImpl(sl()),
   );
 
-  // 3. repository
   sl.registerLazySingleton<VeiculoRepository>(
     () => VeiculoRepositoryImpl(sl(), sl()),
   );
 
-  // 4. usecases
   sl.registerLazySingleton(() => GetVeiculos(sl()));
 
-  // 5. blocs
+  sl.registerLazySingleton(() => MarcaService());
   sl.registerFactory(() => VeiculoBloc(sl()));
+  sl.registerFactory(() => MarcaBloc(sl<MarcaService>()));
 }

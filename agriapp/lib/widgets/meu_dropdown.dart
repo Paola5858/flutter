@@ -1,18 +1,18 @@
 import 'package:flutter/material.dart';
 
 class MeuDropdown extends StatelessWidget {
-  final int? value;
+  final int? initialValue;
   final String label;
   final List<dynamic> items;
   final Function(int?) onChanged;
 
   const MeuDropdown({
-    Key? key,
-    required this.value,
+    super.key,
+    required this.initialValue,
     required this.label,
     required this.items,
     required this.onChanged,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -24,18 +24,17 @@ class MeuDropdown extends StatelessWidget {
           Text(label, style: const TextStyle(fontSize: 16.0)),
           const SizedBox(height: 8.0),
           DropdownButtonFormField<int>(
-            value: value,
+            initialValue: initialValue,
             items: items
                 .map((item) => DropdownMenuItem<int>(
-                      value: item['id'],
-                      child: Text(item['nome']),
+                      value: item.id is int ? item.id : int.tryParse(item.id.toString()),
+                      child: Text(item.nome ?? item.toString()),
                     ))
                 .toList(),
             onChanged: onChanged,
             decoration: const InputDecoration(
               border: OutlineInputBorder(),
-              contentPadding:
-                  EdgeInsets.symmetric(horizontal: 12.0, vertical: 8.0),
+              contentPadding: EdgeInsets.symmetric(horizontal: 12.0, vertical: 8.0),
             ),
           ),
         ],

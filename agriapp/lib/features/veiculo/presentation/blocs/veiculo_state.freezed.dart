@@ -23,6 +23,7 @@ mixin _$VeiculoState {
     required TResult Function() loading,
     required TResult Function(String message) error,
     required TResult Function(List<VeiculoEntity> veiculos) loaded,
+    required TResult Function() success,
   }) => throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>({
@@ -30,6 +31,7 @@ mixin _$VeiculoState {
     TResult? Function()? loading,
     TResult? Function(String message)? error,
     TResult? Function(List<VeiculoEntity> veiculos)? loaded,
+    TResult? Function()? success,
   }) => throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
@@ -37,6 +39,7 @@ mixin _$VeiculoState {
     TResult Function()? loading,
     TResult Function(String message)? error,
     TResult Function(List<VeiculoEntity> veiculos)? loaded,
+    TResult Function()? success,
     required TResult orElse(),
   }) => throw _privateConstructorUsedError;
   @optionalTypeArgs
@@ -45,6 +48,7 @@ mixin _$VeiculoState {
     required TResult Function(_Loading value) loading,
     required TResult Function(_Error value) error,
     required TResult Function(_Loaded value) loaded,
+    required TResult Function(_Success value) success,
   }) => throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult? mapOrNull<TResult extends Object?>({
@@ -52,6 +56,7 @@ mixin _$VeiculoState {
     TResult? Function(_Loading value)? loading,
     TResult? Function(_Error value)? error,
     TResult? Function(_Loaded value)? loaded,
+    TResult? Function(_Success value)? success,
   }) => throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult maybeMap<TResult extends Object?>({
@@ -59,6 +64,7 @@ mixin _$VeiculoState {
     TResult Function(_Loading value)? loading,
     TResult Function(_Error value)? error,
     TResult Function(_Loaded value)? loaded,
+    TResult Function(_Success value)? success,
     required TResult orElse(),
   }) => throw _privateConstructorUsedError;
 }
@@ -132,6 +138,7 @@ class _$InitialImpl implements _Initial {
     required TResult Function() loading,
     required TResult Function(String message) error,
     required TResult Function(List<VeiculoEntity> veiculos) loaded,
+    required TResult Function() success,
   }) {
     return initial();
   }
@@ -143,6 +150,7 @@ class _$InitialImpl implements _Initial {
     TResult? Function()? loading,
     TResult? Function(String message)? error,
     TResult? Function(List<VeiculoEntity> veiculos)? loaded,
+    TResult? Function()? success,
   }) {
     return initial?.call();
   }
@@ -154,6 +162,7 @@ class _$InitialImpl implements _Initial {
     TResult Function()? loading,
     TResult Function(String message)? error,
     TResult Function(List<VeiculoEntity> veiculos)? loaded,
+    TResult Function()? success,
     required TResult orElse(),
   }) {
     if (initial != null) {
@@ -169,6 +178,7 @@ class _$InitialImpl implements _Initial {
     required TResult Function(_Loading value) loading,
     required TResult Function(_Error value) error,
     required TResult Function(_Loaded value) loaded,
+    required TResult Function(_Success value) success,
   }) {
     return initial(this);
   }
@@ -180,6 +190,7 @@ class _$InitialImpl implements _Initial {
     TResult? Function(_Loading value)? loading,
     TResult? Function(_Error value)? error,
     TResult? Function(_Loaded value)? loaded,
+    TResult? Function(_Success value)? success,
   }) {
     return initial?.call(this);
   }
@@ -191,6 +202,7 @@ class _$InitialImpl implements _Initial {
     TResult Function(_Loading value)? loading,
     TResult Function(_Error value)? error,
     TResult Function(_Loaded value)? loaded,
+    TResult Function(_Success value)? success,
     required TResult orElse(),
   }) {
     if (initial != null) {
@@ -251,6 +263,7 @@ class _$LoadingImpl implements _Loading {
     required TResult Function() loading,
     required TResult Function(String message) error,
     required TResult Function(List<VeiculoEntity> veiculos) loaded,
+    required TResult Function() success,
   }) {
     return loading();
   }
@@ -262,6 +275,7 @@ class _$LoadingImpl implements _Loading {
     TResult? Function()? loading,
     TResult? Function(String message)? error,
     TResult? Function(List<VeiculoEntity> veiculos)? loaded,
+    TResult? Function()? success,
   }) {
     return loading?.call();
   }
@@ -273,6 +287,7 @@ class _$LoadingImpl implements _Loading {
     TResult Function()? loading,
     TResult Function(String message)? error,
     TResult Function(List<VeiculoEntity> veiculos)? loaded,
+    TResult Function()? success,
     required TResult orElse(),
   }) {
     if (loading != null) {
@@ -288,6 +303,7 @@ class _$LoadingImpl implements _Loading {
     required TResult Function(_Loading value) loading,
     required TResult Function(_Error value) error,
     required TResult Function(_Loaded value) loaded,
+    required TResult Function(_Success value) success,
   }) {
     return loading(this);
   }
@@ -299,6 +315,7 @@ class _$LoadingImpl implements _Loading {
     TResult? Function(_Loading value)? loading,
     TResult? Function(_Error value)? error,
     TResult? Function(_Loaded value)? loaded,
+    TResult? Function(_Success value)? success,
   }) {
     return loading?.call(this);
   }
@@ -310,6 +327,7 @@ class _$LoadingImpl implements _Loading {
     TResult Function(_Loading value)? loading,
     TResult Function(_Error value)? error,
     TResult Function(_Loaded value)? loaded,
+    TResult Function(_Success value)? success,
     required TResult orElse(),
   }) {
     if (loading != null) {
@@ -397,6 +415,7 @@ class _$ErrorImpl implements _Error {
     required TResult Function() loading,
     required TResult Function(String message) error,
     required TResult Function(List<VeiculoEntity> veiculos) loaded,
+    required TResult Function() success,
   }) {
     return error(message);
   }
@@ -408,6 +427,7 @@ class _$ErrorImpl implements _Error {
     TResult? Function()? loading,
     TResult? Function(String message)? error,
     TResult? Function(List<VeiculoEntity> veiculos)? loaded,
+    TResult? Function()? success,
   }) {
     return error?.call(message);
   }
@@ -419,6 +439,7 @@ class _$ErrorImpl implements _Error {
     TResult Function()? loading,
     TResult Function(String message)? error,
     TResult Function(List<VeiculoEntity> veiculos)? loaded,
+    TResult Function()? success,
     required TResult orElse(),
   }) {
     if (error != null) {
@@ -434,6 +455,7 @@ class _$ErrorImpl implements _Error {
     required TResult Function(_Loading value) loading,
     required TResult Function(_Error value) error,
     required TResult Function(_Loaded value) loaded,
+    required TResult Function(_Success value) success,
   }) {
     return error(this);
   }
@@ -445,6 +467,7 @@ class _$ErrorImpl implements _Error {
     TResult? Function(_Loading value)? loading,
     TResult? Function(_Error value)? error,
     TResult? Function(_Loaded value)? loaded,
+    TResult? Function(_Success value)? success,
   }) {
     return error?.call(this);
   }
@@ -456,6 +479,7 @@ class _$ErrorImpl implements _Error {
     TResult Function(_Loading value)? loading,
     TResult Function(_Error value)? error,
     TResult Function(_Loaded value)? loaded,
+    TResult Function(_Success value)? success,
     required TResult orElse(),
   }) {
     if (error != null) {
@@ -557,6 +581,7 @@ class _$LoadedImpl implements _Loaded {
     required TResult Function() loading,
     required TResult Function(String message) error,
     required TResult Function(List<VeiculoEntity> veiculos) loaded,
+    required TResult Function() success,
   }) {
     return loaded(veiculos);
   }
@@ -568,6 +593,7 @@ class _$LoadedImpl implements _Loaded {
     TResult? Function()? loading,
     TResult? Function(String message)? error,
     TResult? Function(List<VeiculoEntity> veiculos)? loaded,
+    TResult? Function()? success,
   }) {
     return loaded?.call(veiculos);
   }
@@ -579,6 +605,7 @@ class _$LoadedImpl implements _Loaded {
     TResult Function()? loading,
     TResult Function(String message)? error,
     TResult Function(List<VeiculoEntity> veiculos)? loaded,
+    TResult Function()? success,
     required TResult orElse(),
   }) {
     if (loaded != null) {
@@ -594,6 +621,7 @@ class _$LoadedImpl implements _Loaded {
     required TResult Function(_Loading value) loading,
     required TResult Function(_Error value) error,
     required TResult Function(_Loaded value) loaded,
+    required TResult Function(_Success value) success,
   }) {
     return loaded(this);
   }
@@ -605,6 +633,7 @@ class _$LoadedImpl implements _Loaded {
     TResult? Function(_Loading value)? loading,
     TResult? Function(_Error value)? error,
     TResult? Function(_Loaded value)? loaded,
+    TResult? Function(_Success value)? success,
   }) {
     return loaded?.call(this);
   }
@@ -616,6 +645,7 @@ class _$LoadedImpl implements _Loaded {
     TResult Function(_Loading value)? loading,
     TResult Function(_Error value)? error,
     TResult Function(_Loaded value)? loaded,
+    TResult Function(_Success value)? success,
     required TResult orElse(),
   }) {
     if (loaded != null) {
@@ -635,4 +665,129 @@ abstract class _Loaded implements VeiculoState {
   @JsonKey(includeFromJson: false, includeToJson: false)
   _$$LoadedImplCopyWith<_$LoadedImpl> get copyWith =>
       throw _privateConstructorUsedError;
+}
+
+/// @nodoc
+abstract class _$$SuccessImplCopyWith<$Res> {
+  factory _$$SuccessImplCopyWith(
+    _$SuccessImpl value,
+    $Res Function(_$SuccessImpl) then,
+  ) = __$$SuccessImplCopyWithImpl<$Res>;
+}
+
+/// @nodoc
+class __$$SuccessImplCopyWithImpl<$Res>
+    extends _$VeiculoStateCopyWithImpl<$Res, _$SuccessImpl>
+    implements _$$SuccessImplCopyWith<$Res> {
+  __$$SuccessImplCopyWithImpl(
+    _$SuccessImpl _value,
+    $Res Function(_$SuccessImpl) _then,
+  ) : super(_value, _then);
+
+  /// Create a copy of VeiculoState
+  /// with the given fields replaced by the non-null parameter values.
+}
+
+/// @nodoc
+
+class _$SuccessImpl implements _Success {
+  const _$SuccessImpl();
+
+  @override
+  String toString() {
+    return 'VeiculoState.success()';
+  }
+
+  @override
+  bool operator ==(Object other) {
+    return identical(this, other) ||
+        (other.runtimeType == runtimeType && other is _$SuccessImpl);
+  }
+
+  @override
+  int get hashCode => runtimeType.hashCode;
+
+  @override
+  @optionalTypeArgs
+  TResult when<TResult extends Object?>({
+    required TResult Function() initial,
+    required TResult Function() loading,
+    required TResult Function(String message) error,
+    required TResult Function(List<VeiculoEntity> veiculos) loaded,
+    required TResult Function() success,
+  }) {
+    return success();
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult? whenOrNull<TResult extends Object?>({
+    TResult? Function()? initial,
+    TResult? Function()? loading,
+    TResult? Function(String message)? error,
+    TResult? Function(List<VeiculoEntity> veiculos)? loaded,
+    TResult? Function()? success,
+  }) {
+    return success?.call();
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult maybeWhen<TResult extends Object?>({
+    TResult Function()? initial,
+    TResult Function()? loading,
+    TResult Function(String message)? error,
+    TResult Function(List<VeiculoEntity> veiculos)? loaded,
+    TResult Function()? success,
+    required TResult orElse(),
+  }) {
+    if (success != null) {
+      return success();
+    }
+    return orElse();
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult map<TResult extends Object?>({
+    required TResult Function(_Initial value) initial,
+    required TResult Function(_Loading value) loading,
+    required TResult Function(_Error value) error,
+    required TResult Function(_Loaded value) loaded,
+    required TResult Function(_Success value) success,
+  }) {
+    return success(this);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult? mapOrNull<TResult extends Object?>({
+    TResult? Function(_Initial value)? initial,
+    TResult? Function(_Loading value)? loading,
+    TResult? Function(_Error value)? error,
+    TResult? Function(_Loaded value)? loaded,
+    TResult? Function(_Success value)? success,
+  }) {
+    return success?.call(this);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult maybeMap<TResult extends Object?>({
+    TResult Function(_Initial value)? initial,
+    TResult Function(_Loading value)? loading,
+    TResult Function(_Error value)? error,
+    TResult Function(_Loaded value)? loaded,
+    TResult Function(_Success value)? success,
+    required TResult orElse(),
+  }) {
+    if (success != null) {
+      return success(this);
+    }
+    return orElse();
+  }
+}
+
+abstract class _Success implements VeiculoState {
+  const factory _Success() = _$SuccessImpl;
 }

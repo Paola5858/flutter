@@ -78,7 +78,6 @@ class VeiculoListPage extends StatelessWidget {
                             itemCount: veiculos.length,
                             itemBuilder: (context, index) {
                               final veiculo = veiculos[index];
-                              // hero tag stagger scale
                               return Semantics(
                                 label: 'veículo placa ${veiculo.placa}',
                                 button: true,
@@ -88,19 +87,34 @@ class VeiculoListPage extends StatelessWidget {
                                     margin: const EdgeInsets.only(bottom: 12),
                                     color: tokens.surface,
                                     elevation: 2,
-                                    child: InkWell(
-                                      borderRadius: BorderRadius.circular(8),
-                                      onTap: () {
-                                        // router push veiculo_detail
-                                      },
-                                      child: Padding(
-                                        padding: const EdgeInsets.all(16.0),
-                                        child: Text(
-                                          veiculo.placa,
-                                          style: TextStyle(
-                                            color: tokens.textPrimary,
+                                    child: ListTile(
+                                      leading: const Icon(Icons.directions_car),
+                                      title: Text(veiculo.placa),
+                                      subtitle: Text(
+                                        'Ano: ${veiculo.ano ?? '-'} | Horas: ${veiculo.horimetro ?? '-'}',
+                                      ),
+                                      trailing: Row(
+                                        mainAxisSize: MainAxisSize.min,
+                                        children: [
+                                          IconButton(
+                                            icon: const Icon(Icons.edit, color: Colors.blue),
+                                            onPressed: () {
+                                              Navigator.of(context).push(
+                                                MaterialPageRoute(
+                                                  builder: (_) => VeiculoFormPage(veiculo: veiculo),
+                                                ),
+                                              );
+                                            },
                                           ),
-                                        ),
+                                          IconButton(
+                                            icon: const Icon(Icons.delete, color: Colors.red),
+                                            onPressed: () {
+                                              context.read<VeiculoBloc>().add(
+                                                    VeiculoEvent.delete(veiculo.id),
+                                                  );
+                                            },
+                                          ),
+                                        ],
                                       ),
                                     ),
                                   ),
@@ -109,6 +123,7 @@ class VeiculoListPage extends StatelessWidget {
                             },
                           ),
                         ),
+                        success: () => const SliverToBoxAdapter(child: SizedBox.shrink()),
                       );
                     },
                   ),

@@ -8,7 +8,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:agriapp/main.dart';
-import 'package:agriapp/features/veiculo/presentation/pages/veiculo_list_page.dart';
+import 'package:agriapp/features/home/presentation/pages/home_screen.dart';
 import 'package:agriapp/core/di/injection_container.dart' as di;
 
 void main() {
@@ -21,6 +21,6 @@ void main() {
     await tester.pumpAndSettle();
 
     // Verify that the page loads without crashing (smoke test)
-    expect(find.byType(VeiculoListPage), findsOneWidget);
+    expect(find.byType(HomeScreen), findsOneWidget);
   });
 }
