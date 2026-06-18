@@ -2,14 +2,14 @@ class MusicaModel {
   final int id;
   final String nomeMusica;
   final String genero;
-  final int artistaId;
-  final String? nomeArtista; // vem do addon configurado na etapa 5, passo 4
+  final int? artistaId;
+  final String? nomeArtista;
 
   MusicaModel({
     required this.id,
     required this.nomeMusica,
     required this.genero,
-    required this.artistaId,
+    this.artistaId,
     this.nomeArtista,
   });
 
@@ -19,8 +19,10 @@ class MusicaModel {
       nomeMusica: json['nome_musica'],
       genero: json['genero'],
       artistaId: json['artista_id'],
-      // ajuste a chave abaixo pro nome exato que o addon do xano devolver
-      nomeArtista: json['_artistas']?['nome_artista'],
+      // addon pode vir como objeto ou mapa
+      nomeArtista: (json['_artistas'] is Map)
+          ? (json['_artistas'] as Map)['nome_artista']
+          : null,
     );
   }
 }

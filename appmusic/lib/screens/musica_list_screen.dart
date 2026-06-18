@@ -86,6 +86,7 @@ class _MusicaListScreenState extends State<MusicaListScreen> {
           );
         },
       ),
+
       floatingActionButton: FloatingActionButton(
         backgroundColor: AppTheme.amber,
         shape: const CircleBorder(),

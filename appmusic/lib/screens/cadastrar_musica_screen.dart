@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 
 import '../core/app_theme.dart';
-import '../services/artista_service.dart';
 import '../services/musica_service.dart';
 
 class CadastrarMusicaScreen extends StatefulWidget {
@@ -33,16 +32,12 @@ class _CadastrarMusicaScreenState extends State<CadastrarMusicaScreen> {
     setState(() => isSaving = true);
 
     try {
-      // fluxo: cria artista -> cria música com artistaId retornado
-      final artistaId = await ArtistaService.criarArtista(
-        nomeArtistaController.text.trim(),
-      );
-
       await MusicaService.criarMusica(
-        artistaId: artistaId,
+        nomeArtista: nomeArtistaController.text.trim(),
         nomeMusica: nomeMusicaController.text.trim(),
         genero: generoSelecionado,
       );
+
 
       if (mounted) Navigator.pop(context, true);
     } catch (e) {

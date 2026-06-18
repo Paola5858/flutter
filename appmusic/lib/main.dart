@@ -3,12 +3,13 @@ import 'package:flutter/material.dart';
 import 'core/app_theme.dart';
 import 'screens/musica_list_screen.dart';
 
+
 void main() {
-  runApp(const ReffaoApp());
+  runApp(const RefraoApp());
 }
 
-class ReffaoApp extends StatelessWidget {
-  const ReffaoApp({super.key});
+class RefraoApp extends StatelessWidget {
+  const RefraoApp({super.key});
 
   @override
   Widget build(BuildContext context) {
