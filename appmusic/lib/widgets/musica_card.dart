@@ -12,6 +12,8 @@ class MusicaCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    const cream = Color(0xFFF3ECDF);
+
     return GestureDetector(
       onTap: () async {
         await Navigator.push(
@@ -24,15 +26,16 @@ class MusicaCard extends StatelessWidget {
       child: Container(
         margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
         decoration: BoxDecoration(
-          color: AppTheme.cream,
-          borderRadius: BorderRadius.circular(16),
+          color: AppTheme.ink.withOpacity(0.02),
+          borderRadius: BorderRadius.circular(18),
+          border: Border.all(color: AppTheme.cream.withOpacity(0.16), width: 1),
         ),
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            // borda lateral pontilhada
+            // Borda lateral pontilhada
             SizedBox(
-              width: 8,
+              width: 10,
               child: Padding(
                 padding: const EdgeInsets.symmetric(vertical: 12),
                 child: LayoutBuilder(
@@ -69,27 +72,25 @@ class MusicaCard extends StatelessWidget {
                             musica.nomeMusica,
                             maxLines: 1,
                             overflow: TextOverflow.ellipsis,
-                            style: Theme.of(context)
-                                .textTheme
-                                .titleMedium
-                                ?.copyWith(
-                                  fontFamily: 'Bricolage Grotesque',
-                                  color: Colors.black,
-                                  fontWeight: FontWeight.w800,
-                                ),
+                            style: const TextStyle(
+                              fontFamily: 'Bricolage Grotesque',
+                              color: cream,
+                              fontWeight: FontWeight.w900,
+                              fontSize: 16,
+                              letterSpacing: -0.2,
+                            ),
                           ),
                           const SizedBox(height: 6),
                           Text(
                             musica.nomeArtista ?? 'Artista',
                             maxLines: 1,
                             overflow: TextOverflow.ellipsis,
-                            style: Theme.of(context)
-                                .textTheme
-                                .bodyMedium
-                                ?.copyWith(
-                                  fontFamily: 'Hanken Grotesk',
-color: Colors.black.withValues(alpha: 0.75),
-                                ),
+                            style: TextStyle(
+                              fontFamily: 'Hanken Grotesk',
+                              color: cream.withOpacity(0.78),
+                              fontWeight: FontWeight.w700,
+                              fontSize: 13,
+                            ),
                           ),
                           const SizedBox(height: 10),
                           Container(
@@ -100,13 +101,15 @@ color: Colors.black.withValues(alpha: 0.75),
                             decoration: BoxDecoration(
                               color: AppTheme.moss.withOpacity(0.18),
                               borderRadius: BorderRadius.circular(999),
+                              border:
+                                  Border.all(color: cream.withOpacity(0.10)),
                             ),
                             child: Text(
                               musica.genero,
                               style: const TextStyle(
                                 fontFamily: 'Space Mono',
-                                color: AppTheme.moss,
-                                fontWeight: FontWeight.w700,
+                                color: cream,
+                                fontWeight: FontWeight.w900,
                                 fontSize: 12,
                               ),
                             ),

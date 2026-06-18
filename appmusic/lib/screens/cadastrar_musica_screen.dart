@@ -17,7 +17,6 @@ class _CadastrarMusicaScreenState extends State<CadastrarMusicaScreen> {
   String generoSelecionado = 'Rap';
 
   final formKey = GlobalKey<FormState>();
-
   bool isSaving = false;
 
   @override
@@ -29,6 +28,7 @@ class _CadastrarMusicaScreenState extends State<CadastrarMusicaScreen> {
 
   Future<void> salvar() async {
     if (!formKey.currentState!.validate()) return;
+
     setState(() => isSaving = true);
 
     try {
@@ -38,23 +38,23 @@ class _CadastrarMusicaScreenState extends State<CadastrarMusicaScreen> {
         genero: generoSelecionado,
       );
 
-
       if (mounted) Navigator.pop(context, true);
     } catch (e) {
-      if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            backgroundColor: AppTheme.rust,
-            content: Text(
-              'Erro ao salvar: $e',
-              style: const TextStyle(
-                fontFamily: 'Hanken Grotesk',
-                fontWeight: FontWeight.w700,
-              ),
+      if (!mounted) return;
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          backgroundColor: AppTheme.rust,
+          content: Text(
+            'Erro ao salvar: $e',
+            style: const TextStyle(
+              fontFamily: 'Hanken Grotesk',
+              fontWeight: FontWeight.w700,
+              color: Color(0xFFF3ECDF),
             ),
           ),
-        );
-      }
+        ),
+      );
     } finally {
       if (mounted) setState(() => isSaving = false);
     }
@@ -63,12 +63,18 @@ class _CadastrarMusicaScreenState extends State<CadastrarMusicaScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: AppTheme.ink,
       appBar: AppBar(
+        backgroundColor: AppTheme.ink,
+        foregroundColor: AppTheme.cream,
+        elevation: 0,
         title: const Text(
           'cadastrar',
           style: TextStyle(
             fontFamily: 'Bricolage Grotesque',
             fontWeight: FontWeight.w900,
+            fontSize: 22,
+            letterSpacing: -0.2,
           ),
         ),
         centerTitle: true,
@@ -81,44 +87,41 @@ class _CadastrarMusicaScreenState extends State<CadastrarMusicaScreen> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
-                Container(
-                  padding: const EdgeInsets.all(16),
-                  decoration: BoxDecoration(
-                    color: AppTheme.cream,
-                    borderRadius: BorderRadius.circular(18),
-                  ),
+                _SectionCard(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.stretch,
                     children: [
-                      Text(
+                      const Text(
                         'Nova música',
-                        style: Theme.of(context)
-                            .textTheme
-                            .displaySmall
-                            ?.copyWith(
-                              fontFamily: 'Bricolage Grotesque',
-                              color: Colors.black,
-                              fontWeight: FontWeight.w900,
-                            ),
+                        style: TextStyle(
+                          fontFamily: 'Bricolage Grotesque',
+                          color: Color(0xFFF3ECDF),
+                          fontWeight: FontWeight.w900,
+                          fontSize: 22,
+                          letterSpacing: -0.2,
+                        ),
                       ),
-                      const SizedBox(height: 18),
+const SizedBox(height: 8),
+                      const Text(
+                        'Salve e volte: o item aparece imediatamente na lista.',
+                        style: TextStyle(
+                          fontFamily: 'Hanken Grotesk',
+                          color: Color(0xFFF3ECDF),
+                          fontWeight: FontWeight.w700,
+                          fontSize: 13,
+                        ),
+                      ),
+                      const SizedBox(height: 16),
 
                       TextFormField(
                         controller: nomeArtistaController,
-                        style: const TextStyle(fontFamily: 'Hanken Grotesk'),
-                        decoration: InputDecoration(
+                        style: const TextStyle(
+                          fontFamily: 'Hanken Grotesk',
+                          color: Color(0xFFF3ECDF),
+                          fontWeight: FontWeight.w700,
+                        ),
+                        decoration: _inputDecoration(
                           labelText: 'Nome do artista',
-                          labelStyle: const TextStyle(
-                            fontFamily: 'Space Mono',
-                            color: Colors.black54,
-                            fontWeight: FontWeight.w700,
-                          ),
-                          filled: true,
-                          fillColor: Colors.white.withOpacity(0.55),
-                          border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(14),
-                            borderSide: BorderSide.none,
-                          ),
                         ),
                         validator: (v) {
                           if (v == null || v.trim().isEmpty) return 'Obrigatório';
@@ -130,20 +133,13 @@ class _CadastrarMusicaScreenState extends State<CadastrarMusicaScreen> {
 
                       TextFormField(
                         controller: nomeMusicaController,
-                        style: const TextStyle(fontFamily: 'Hanken Grotesk'),
-                        decoration: InputDecoration(
+                        style: const TextStyle(
+                          fontFamily: 'Hanken Grotesk',
+                          color: Color(0xFFF3ECDF),
+                          fontWeight: FontWeight.w700,
+                        ),
+                        decoration: _inputDecoration(
                           labelText: 'Nome da música',
-                          labelStyle: const TextStyle(
-                            fontFamily: 'Space Mono',
-                            color: Colors.black54,
-                            fontWeight: FontWeight.w700,
-                          ),
-                          filled: true,
-                          fillColor: Colors.white.withOpacity(0.55),
-                          border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(14),
-                            borderSide: BorderSide.none,
-                          ),
                         ),
                         validator: (v) {
                           if (v == null || v.trim().isEmpty) return 'Obrigatório';
@@ -154,26 +150,16 @@ class _CadastrarMusicaScreenState extends State<CadastrarMusicaScreen> {
                       const SizedBox(height: 14),
 
                       DropdownButtonFormField<String>(
-                        initialValue: generoSelecionado,
-                        decoration: InputDecoration(
+                        value: generoSelecionado,
+                        decoration: _inputDecoration(
                           labelText: 'Gênero',
-                          labelStyle: const TextStyle(
-                            fontFamily: 'Space Mono',
-                            color: Colors.black54,
-                            fontWeight: FontWeight.w700,
-                          ),
-                          filled: true,
-                          fillColor: Colors.white.withOpacity(0.55),
-                          border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(14),
-                            borderSide: BorderSide.none,
-                          ),
                         ),
+                        dropdownColor: AppTheme.ink,
                         style: const TextStyle(
                           fontFamily: 'Hanken Grotesk',
-                          color: Colors.black,
+                          color: Color(0xFFF3ECDF),
+                          fontWeight: FontWeight.w800,
                         ),
-                        dropdownColor: AppTheme.cream,
                         items: const [
                           DropdownMenuItem(value: 'Rap', child: Text('Rap')),
                           DropdownMenuItem(value: 'Rock', child: Text('Rock')),
@@ -197,10 +183,11 @@ class _CadastrarMusicaScreenState extends State<CadastrarMusicaScreen> {
                         child: ElevatedButton.icon(
                           style: ElevatedButton.styleFrom(
                             backgroundColor: AppTheme.amber,
-                            foregroundColor: Colors.black,
+                            foregroundColor: AppTheme.ink,
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(16),
                             ),
+                            elevation: 0,
                           ),
                           onPressed: isSaving ? null : salvar,
                           icon: isSaving
@@ -209,7 +196,7 @@ class _CadastrarMusicaScreenState extends State<CadastrarMusicaScreen> {
                                   height: 22,
                                   child: CircularProgressIndicator(
                                     strokeWidth: 2.6,
-                                    color: Colors.black,
+                                    color: AppTheme.ink,
                                   ),
                                 )
                               : const Icon(Icons.save),
@@ -217,7 +204,7 @@ class _CadastrarMusicaScreenState extends State<CadastrarMusicaScreen> {
                             isSaving ? 'Salvando...' : 'Salvar',
                             style: const TextStyle(
                               fontFamily: 'Space Mono',
-                              fontWeight: FontWeight.w800,
+                              fontWeight: FontWeight.w900,
                               letterSpacing: 0.3,
                             ),
                           ),
@@ -227,12 +214,13 @@ class _CadastrarMusicaScreenState extends State<CadastrarMusicaScreen> {
                       const SizedBox(height: 10),
 
                       const Text(
-                        'Ao salvar, o artista é criado e a música é registrada usando o id retornado.',
+                        'Ao salvar, a música fica registrada no backend e volta para esta tela com refresh.',
                         style: TextStyle(
-                          color: Colors.black54,
                           fontFamily: 'Hanken Grotesk',
+                          color: Color(0xFFF3ECDF),
                           fontWeight: FontWeight.w700,
                           fontSize: 12.5,
+                          height: 1.25,
                         ),
                       ),
                     ],
@@ -243,6 +231,50 @@ class _CadastrarMusicaScreenState extends State<CadastrarMusicaScreen> {
           ),
         ),
       ),
+    );
+  }
+
+  InputDecoration _inputDecoration({required String labelText}) {
+    return InputDecoration(
+      labelText: labelText,
+      labelStyle: TextStyle(
+        fontFamily: 'Space Mono',
+        color: Color(0xFFF3ECDF).withOpacity(0.72),
+        fontWeight: FontWeight.w800,
+      ),
+      filled: true,
+      fillColor: AppTheme.ink.withOpacity(0.25),
+      border: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(14),
+        borderSide: BorderSide(color: Color(0xFFF3ECDF).withOpacity(0.18)),
+      ),
+      enabledBorder: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(14),
+        borderSide: BorderSide(color: Color(0xFFF3ECDF).withOpacity(0.18)),
+      ),
+      focusedBorder: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(14),
+        borderSide: BorderSide(color: AppTheme.amber, width: 1.6),
+      ),
+    );
+  }
+}
+
+class _SectionCard extends StatelessWidget {
+  const _SectionCard({required this.child});
+
+  final Widget child;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        color: AppTheme.ink.withOpacity(0.08),
+        borderRadius: BorderRadius.circular(18),
+        border: Border.all(color: AppTheme.cream.withOpacity(0.14)),
+      ),
+      child: child,
     );
   }
 }
