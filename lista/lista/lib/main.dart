@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 void main() {
   runApp(
-    MaterialApp(
+    const MaterialApp(
       home: ListaJogos(),
     ),
   );
@@ -12,11 +12,10 @@ class ListaJogos extends StatefulWidget {
   const ListaJogos({super.key});
 
   @override
-  State ListaJogos> @override
-  createState() =>  ListaJogosState();
+  State<ListaJogos> createState() => ListaJogosState();
 }
 
-class  ListaJogosState extends State ListaJogos> {
+class ListaJogosState extends State<ListaJogos> {
   final List<String> jogos = [
     'The Legend of Zelda: Breath of the Wild',
     'Super Mario Odyssey',
@@ -27,21 +26,25 @@ class  ListaJogosState extends State ListaJogos> {
     'Fortnite',
     'Among Us',
     'Call of Duty: Warzone',
-    'Cyberpunk 2077'
+    'Cyberpunk 2077',
   ];
+
   @override
   Widget build(BuildContext context) {
-    return Scaffold();
-    appBar: AppBar(
-      title: Text('Lista de Jogos'),
-    ),
-    body: ListView.builder(
-      itemCount: jogos.length,
-      itemBuilder: (context, index) {
-        return ListTile(
-          leading: Icon(Icons.videogame_asset),
-          title: Text(jogos[index]),
-          trailing: Icon(Icons.arrow_forward),
-        );
-      },
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('Lista de Jogos'),
+      ),
+      body: ListView.builder(
+        itemCount: jogos.length,
+        itemBuilder: (context, index) {
+          return ListTile(
+            leading: const Icon(Icons.videogame_asset),
+            title: Text(jogos[index]),
+            trailing: const Icon(Icons.arrow_forward),
+          );
+        },
+      ),
     );
+  }
+}
