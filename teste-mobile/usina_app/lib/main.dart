@@ -11,7 +11,7 @@ DashboardExtracao criarDashboardDemo() {
   const usina = Usina(id: 1, nome: 'usina aurora', localizacao: 'sertão nordestino');
   const unidade = Unidade(id: 1, nome: 'extração principal', usina: usina);
   const equipamento = Equipamento(id: 1, nome: 'linha de moagem 01', unidade: unidade);
-  const safra = Safra(id: 1, nomeSafra: 'safra 2026', dataInicio: DateTime(2026, 4, 1), dataFim: DateTime(2026, 11, 30));
+  final safra = Safra(id: 1, nomeSafra: 'safra 2026', dataInicio: DateTime(2026, 4, 1), dataFim: DateTime(2026, 11, 30));
   const tonelada = UnidadeMedida(id: 1, nome: 'tonelada', simbolo: 't');
   const celsius = UnidadeMedida(id: 2, nome: 'graus celsius', simbolo: '°c');
   const percentual = UnidadeMedida(id: 3, nome: 'percentual', simbolo: '%');

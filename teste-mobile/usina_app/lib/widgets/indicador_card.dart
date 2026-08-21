@@ -40,6 +40,8 @@ class IndicadorCard extends StatelessWidget {
             const SizedBox(height: 14),
             Row(children: [Expanded(child: ClipRRect(borderRadius: BorderRadius.circular(10), child: LinearProgressIndicator(value: _progress, minHeight: 5, backgroundColor: Colors.white.withValues(alpha: .08), valueColor: AlwaysStoppedAnimation(color)))), const SizedBox(width: 12), Text(_statusLabel(status), style: TextStyle(color: color, fontSize: 10, fontWeight: FontWeight.w600))]),
             const SizedBox(height: 13),
+            Row(children: [const Icon(Icons.factory_outlined, size: 12, color: Color(0xff8f8291)), const SizedBox(width: 5), Expanded(child: Text('${medicao.equipamento.unidade.usina.nome}  ›  ${medicao.equipamento.unidade.nome}  ›  ${medicao.equipamento.nome}', overflow: TextOverflow.ellipsis, style: const TextStyle(color: Color(0xff8f8291), fontSize: 10)))]),
+            const SizedBox(height: 6),
             Row(children: [const Icon(Icons.schedule_outlined, size: 13, color: Color(0xff8f8291)), const SizedBox(width: 5), Text(_formatDate(medicao.data), style: const TextStyle(color: Color(0xff8f8291), fontSize: 10)), const Spacer(), Flexible(child: Text(indicador.descricao, overflow: TextOverflow.ellipsis, style: const TextStyle(color: Color(0xff9f919f), fontSize: 10)))]),
           ]),
         ),

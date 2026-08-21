@@ -76,7 +76,7 @@ class _AmbientBackground extends StatelessWidget {
   @override
   Widget build(BuildContext context) => Container(
         decoration: const BoxDecoration(
-          gradient: LinearGradient(begin: Alignment.topLeft, end: Alignment.bottomRight, colors: [Color(0xff28172b), Color(0xff100d16) 42%, Color(0xff171327)]),
+          gradient: LinearGradient(begin: Alignment.topLeft, end: Alignment.bottomRight, colors: [Color(0xff28172b), Color(0xff100d16), Color(0xff171327)]),
         ),
         child: Stack(children: [
           Positioned(top: -80, right: -45, child: _Glow(size: 210, color: Color(0xffe36f9a))),
@@ -132,7 +132,7 @@ class _SummaryCard extends StatelessWidget {
   final int total;
   const _SummaryCard({required this.resumo, required this.total});
   @override
-  Widget build(BuildContext context) => ClipRRect(borderRadius: BorderRadius.circular(24), child: BackdropFilter(filter: ImageFilter.blur(sigmaX: 18, sigmaY: 18), child: Container(padding: const EdgeInsets.all(18), decoration: BoxDecoration(gradient: LinearGradient(colors: [Colors.white.withValues(alpha: .12), Colors.white.withValues(alpha: .035)]), borderRadius: BorderRadius.circular(24), border: Border.all(color: Colors.white.withValues(alpha: .13))), child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [Row(children: [const Text('resumo operacional', style: TextStyle(fontSize: 13, fontWeight: FontWeight.w600)), const Spacer(), Text('$total leituras', style: const TextStyle(color: Color(0xffa99eae), fontSize: 11))]), const SizedBox(height: 17), Row(children: [_StatusPill(label: 'dentro da meta', value: resumo[StatusIndicador.dentroMeta] ?? 0, color: const Color(0xff91dfb7)), _StatusPill(label: 'atenção', value: resumo[StatusIndicador.atencao] ?? 0, color: const Color(0xfff2c476)), _StatusPill(label: 'fora', value: resumo[StatusIndicador.foraMeta] ?? 0, color: const Color(0xffec8fa9))])])));
+  Widget build(BuildContext context) => ClipRRect(borderRadius: BorderRadius.circular(24), child: BackdropFilter(filter: ImageFilter.blur(sigmaX: 18, sigmaY: 18), child: Container(padding: const EdgeInsets.all(18), decoration: BoxDecoration(gradient: LinearGradient(colors: [Colors.white.withValues(alpha: .12), Colors.white.withValues(alpha: .035)]), borderRadius: BorderRadius.circular(24), border: Border.all(color: Colors.white.withValues(alpha: .13))), child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [Row(children: [const Text('resumo operacional', style: TextStyle(fontSize: 13, fontWeight: FontWeight.w600)), const Spacer(), Text('$total leituras', style: const TextStyle(color: Color(0xffa99eae), fontSize: 11))]), const SizedBox(height: 17), Row(children: [_StatusPill(label: 'dentro da meta', value: resumo[StatusIndicador.dentroMeta] ?? 0, color: const Color(0xff91dfb7)), _StatusPill(label: 'atenção', value: resumo[StatusIndicador.atencao] ?? 0, color: const Color(0xfff2c476)), _StatusPill(label: 'fora', value: resumo[StatusIndicador.foraMeta] ?? 0, color: const Color(0xffec8fa9))])]))));
 }
 
 class _StatusPill extends StatelessWidget {
