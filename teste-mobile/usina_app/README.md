@@ -12,6 +12,8 @@ Os modelos possuem serialização JSON onde prevista no diagrama. `Medicao` calc
 
 A tela inicial usa fundo ameixa/grafite, superfícies translúcidas com blur, bordas sutis, acentos rosa queimado e lavanda, cartões de leitura, barra de progresso, status de meta e filtro por dia, semana, mês e safra. Todo o texto da interface segue a escrita em minúsculas pedida para o produto.
 
+A atividade do menu principal foi integrada diretamente ao dashboard. O AppBar agora abre um drawer com estética natural em verde musgo, cabeçalho da usina, estado visual do item ativo e submenu expansível de cadastro com unidade, setor, equipamento, indicador, funcionário, tipo de medição e parâmetro. Como as telas de cadastro ainda serão criadas nas próximas etapas, cada item mostra uma confirmação breve por SnackBar sem fingir que existe uma navegação pronta.
+
 ## execução
 
 Na raiz de `teste-mobile/usina_app`, execute:

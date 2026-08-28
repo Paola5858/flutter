@@ -14,12 +14,49 @@ class DashboardScreen extends StatefulWidget {
 
 class _DashboardScreenState extends State<DashboardScreen> {
   TipoPeriodo periodo = TipoPeriodo.dia;
+  String itemSelecionado = 'início';
 
   @override
   Widget build(BuildContext context) {
     final medicoes = widget.dashboard.filtrarPorPeriodo(periodo);
     final resumo = widget.dashboard.calcularResumoStatus();
     return Scaffold(
+      appBar: AppBar(
+        backgroundColor: Colors.transparent,
+        elevation: 0,
+        scrolledUnderElevation: 0,
+        leading: Builder(
+          builder: (context) => IconButton(
+            tooltip: 'abrir menu principal',
+            icon: const Icon(Icons.menu_rounded),
+            onPressed: () => Scaffold.of(context).openDrawer(),
+          ),
+        ),
+        title: const Text(
+          'painel de extração',
+          style: TextStyle(fontSize: 14, fontWeight: FontWeight.w600),
+        ),
+      ),
+      drawer: Drawer(
+        width: 326,
+        backgroundColor: const Color(0xff111a17),
+        child: _MenuPrincipal(
+          itemSelecionado: itemSelecionado,
+          onItemSelected: (item) {
+            setState(() => itemSelecionado = item);
+            Navigator.of(context).pop();
+            if (item != 'início') {
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(
+                  content: Text('$item selecionado. em breve essa tela ganha vida.'),
+                  behavior: SnackBarBehavior.floating,
+                  backgroundColor: const Color(0xff203d32),
+                ),
+              );
+            }
+          },
+        ),
+      ),
       body: Stack(
         children: [
           const _AmbientBackground(),
@@ -68,6 +105,185 @@ class _DashboardScreenState extends State<DashboardScreen> {
       ),
     );
   }
+}
+
+class _MenuPrincipal extends StatefulWidget {
+  final String itemSelecionado;
+  final ValueChanged<String> onItemSelected;
+
+  const _MenuPrincipal({
+    required this.itemSelecionado,
+    required this.onItemSelected,
+  });
+
+  @override
+  State<_MenuPrincipal> createState() => _MenuPrincipalState();
+}
+
+class _MenuPrincipalState extends State<_MenuPrincipal> {
+  bool cadastroAberto = false;
+
+  static const itensCadastro = [
+    ('unidade', Icons.account_tree_outlined),
+    ('setor', Icons.view_quilt_outlined),
+    ('equipamento', Icons.precision_manufacturing_outlined),
+    ('indicador', Icons.insights_rounded),
+    ('funcionário', Icons.badge_outlined),
+    ('tipo de medição', Icons.tune_rounded),
+    ('parâmetro', Icons.settings_suggest_outlined),
+  ];
+
+  Widget montarMenu() {
+    return DecoratedBox(
+      decoration: const BoxDecoration(
+        gradient: LinearGradient(
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+          colors: [Color(0xff172820), Color(0xff101614), Color(0xff0d1211)],
+        ),
+      ),
+      child: SafeArea(
+        child: ListView(
+          padding: const EdgeInsets.fromLTRB(18, 16, 18, 24),
+          children: [
+            _MenuHeader(),
+            const SizedBox(height: 26),
+            const _MenuSectionLabel(label: 'visão geral'),
+            const SizedBox(height: 9),
+            _MenuItem(
+              icon: Icons.grid_view_rounded,
+              label: 'início',
+              selected: widget.itemSelecionado == 'início',
+              onTap: () => widget.onItemSelected('início'),
+            ),
+            const SizedBox(height: 22),
+            const _MenuSectionLabel(label: 'gestão da usina'),
+            const SizedBox(height: 9),
+            _MenuItem(
+              icon: Icons.app_registration_rounded,
+              label: 'cadastro',
+              selected: cadastroAberto,
+              trailing: AnimatedRotation(
+                turns: cadastroAberto ? .5 : 0,
+                duration: const Duration(milliseconds: 220),
+                child: const Icon(Icons.keyboard_arrow_down_rounded, size: 20),
+              ),
+              onTap: () => setState(() => cadastroAberto = !cadastroAberto),
+            ),
+            AnimatedCrossFade(
+              duration: const Duration(milliseconds: 240),
+              crossFadeState: cadastroAberto ? CrossFadeState.showFirst : CrossFadeState.showSecond,
+              firstChild: Padding(
+                padding: const EdgeInsets.only(left: 12, top: 8),
+                child: Column(
+                  children: itensCadastro.map((item) => _MenuSubItem(
+                    icon: item.$2,
+                    label: item.$1,
+                    selected: widget.itemSelecionado == item.$1,
+                    onTap: () => widget.onItemSelected(item.$1),
+                  )).toList(),
+                ),
+              ),
+              secondChild: const SizedBox.shrink(),
+            ),
+            const SizedBox(height: 28),
+            Container(
+              padding: const EdgeInsets.all(15),
+              decoration: BoxDecoration(
+                color: const Color(0xffb8d5a8).withValues(alpha: .08),
+                borderRadius: BorderRadius.circular(20),
+                border: Border.all(color: const Color(0xffb8d5a8).withValues(alpha: .14)),
+              ),
+              child: const Row(
+                children: [
+                  Icon(Icons.eco_outlined, color: Color(0xffb8d5a8), size: 20),
+                  SizedBox(width: 11),
+                  Expanded(child: Text('cada dado conta uma história do campo.', style: TextStyle(color: Color(0xffd9e8d2), fontSize: 12, height: 1.3))),
+                ],
+              ),
+            ),
+            const SizedBox(height: 22),
+            const Divider(color: Color(0x1fffffff)),
+            const SizedBox(height: 10),
+            const Text('usina aurora  ·  safra 2026', style: TextStyle(color: Color(0xff718079), fontSize: 10)),
+          ],
+        ),
+      ),
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) => montarMenu();
+}
+
+class _MenuHeader extends StatelessWidget {
+  const _MenuHeader();
+
+  @override
+  Widget build(BuildContext context) => Container(
+    padding: const EdgeInsets.all(18),
+    decoration: BoxDecoration(
+      gradient: const LinearGradient(colors: [Color(0xff456b4f), Color(0xff294735)]),
+      borderRadius: BorderRadius.circular(25),
+      border: Border.all(color: const Color(0xffb8d5a8).withValues(alpha: .22)),
+      boxShadow: [BoxShadow(color: const Color(0xff8bb77f).withValues(alpha: .13), blurRadius: 28, offset: const Offset(0, 12))],
+    ),
+    child: const Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+      Row(children: [
+        CircleAvatar(radius: 21, backgroundColor: Color(0x28ffffff), child: Icon(Icons.water_drop_outlined, color: Color(0xffe3f1d9), size: 22)),
+        Spacer(),
+        Icon(Icons.more_horiz_rounded, color: Color(0xffc6dec1)),
+      ]),
+      SizedBox(height: 22),
+      Text('menu principal', style: TextStyle(color: Color(0xfff1f8eb), fontSize: 20, fontWeight: FontWeight.w600, letterSpacing: -.4)),
+      SizedBox(height: 5),
+      Text('controle claro para decisões melhores.', style: TextStyle(color: Color(0xffc6dec1), fontSize: 11)),
+    ]),
+  );
+}
+
+class _MenuSectionLabel extends StatelessWidget {
+  final String label;
+  const _MenuSectionLabel({required this.label});
+  @override
+  Widget build(BuildContext context) => Padding(padding: const EdgeInsets.only(left: 13), child: Text(label, style: const TextStyle(color: Color(0xff75867e), fontSize: 10, fontWeight: FontWeight.w600, letterSpacing: 1.1)));
+}
+
+class _MenuItem extends StatelessWidget {
+  final IconData icon;
+  final String label;
+  final bool selected;
+  final Widget? trailing;
+  final VoidCallback onTap;
+  const _MenuItem({required this.icon, required this.label, required this.selected, required this.onTap, this.trailing});
+  @override
+  Widget build(BuildContext context) => ListTile(
+    onTap: onTap,
+    dense: true,
+    contentPadding: const EdgeInsets.symmetric(horizontal: 13, vertical: 2),
+    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
+    tileColor: selected ? const Color(0xffb8d5a8).withValues(alpha: .13) : Colors.transparent,
+    leading: Icon(icon, color: selected ? const Color(0xffc7e1b9) : const Color(0xff90a198), size: 21),
+    title: Text(label, style: TextStyle(color: selected ? const Color(0xffe8f3e2) : const Color(0xffb7c3bd), fontSize: 13, fontWeight: selected ? FontWeight.w600 : FontWeight.w400)),
+    trailing: trailing,
+  );
+}
+
+class _MenuSubItem extends StatelessWidget {
+  final IconData icon;
+  final String label;
+  final bool selected;
+  final VoidCallback onTap;
+  const _MenuSubItem({required this.icon, required this.label, required this.selected, required this.onTap});
+  @override
+  Widget build(BuildContext context) => ListTile(
+    onTap: onTap,
+    dense: true,
+    contentPadding: const EdgeInsets.only(left: 13, right: 8),
+    leading: Icon(icon, color: selected ? const Color(0xffb8d5a8) : const Color(0xff6e7f76), size: 17),
+    title: Text(label, style: TextStyle(color: selected ? const Color(0xffdcebd5) : const Color(0xff9aa9a1), fontSize: 12)),
+    trailing: selected ? const Icon(Icons.circle, color: Color(0xffb8d5a8), size: 6) : null,
+  );
 }
 
 class _AmbientBackground extends StatelessWidget {
