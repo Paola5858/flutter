@@ -47,7 +47,7 @@ class UsinaApp extends StatelessWidget {
       title: 'usina aurora',
       theme: ThemeData(
         brightness: Brightness.dark,
-        scaffoldBackgroundColor: const Color(0xff100d16),
+        scaffoldBackgroundColor: const Color(0xff0d1211),
         colorScheme: ColorScheme.fromSeed(seedColor: rosa, brightness: Brightness.dark),
         fontFamily: 'Arial',
         useMaterial3: true,
