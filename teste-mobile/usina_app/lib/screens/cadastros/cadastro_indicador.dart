@@ -2,6 +2,7 @@ import 'dart:ui';
 
 import 'package:flutter/material.dart';
 
+import '../../core/theme/app_tokens.dart';
 import '../../models/domain.dart';
 
 class CadastroIndicadorPage extends StatefulWidget {
@@ -62,7 +63,10 @@ class _CadastroIndicadorPageState extends State<CadastroIndicadorPage> {
     final url = valor?.trim() ?? '';
     if (url.isEmpty) return 'informe a url da fonte do indicador';
     final uri = Uri.tryParse(url);
-    if (uri == null || !uri.hasScheme || !uri.hasAuthority || uri.scheme != 'https') {
+    if (uri == null ||
+        !uri.hasScheme ||
+        !uri.hasAuthority ||
+        uri.scheme != 'https') {
       return 'use uma url https válida';
     }
     return null;
@@ -89,14 +93,13 @@ class _CadastroIndicadorPageState extends State<CadastroIndicadorPage> {
       comparacaoIdeal: TipoComparacao.faixaIdeal,
     );
 
-    widget.onSaved?.call(indicador);
     if (!mounted) return;
     setState(() => salvando = false);
     ScaffoldMessenger.of(context).showSnackBar(
       const SnackBar(
         content: Text('indicador cadastrado com sucesso.'),
         behavior: SnackBarBehavior.floating,
-        backgroundColor: Color(0xff2c6149),
+        backgroundColor: AppColors.mineralSoft,
       ),
     );
     await Future<void>.delayed(const Duration(milliseconds: 700));
@@ -106,7 +109,7 @@ class _CadastroIndicadorPageState extends State<CadastroIndicadorPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xff100d16),
+      backgroundColor: AppColors.mineral,
       appBar: AppBar(
         backgroundColor: Colors.transparent,
         elevation: 0,
@@ -116,7 +119,10 @@ class _CadastroIndicadorPageState extends State<CadastroIndicadorPage> {
           icon: const Icon(Icons.arrow_back_rounded),
           onPressed: () => Navigator.of(context).pop(),
         ),
-        title: const Text('novo indicador', style: TextStyle(fontSize: 14, fontWeight: FontWeight.w600)),
+        title: const Text(
+          'novo indicador',
+          style: TextStyle(fontSize: 14, fontWeight: FontWeight.w600),
+        ),
         actions: [
           IconButton(
             tooltip: 'limpar formulário',
@@ -143,9 +149,16 @@ class _CadastroIndicadorPageState extends State<CadastroIndicadorPage> {
                 children: [
                   const _PageIntro(),
                   const SizedBox(height: 22),
-                  _PreviewCard(nome: nomeController.text, descricao: descricaoController.text),
+                  _PreviewCard(
+                    nome: nomeController.text,
+                    descricao: descricaoController.text,
+                  ),
                   const SizedBox(height: 24),
-                  _SectionLabel(index: '01', title: 'identidade do indicador', caption: 'um nome claro facilita cada decisão depois.'),
+                  _SectionLabel(
+                    index: '01',
+                    title: 'identidade do indicador',
+                    caption: 'um nome claro facilita cada decisão depois.',
+                  ),
                   const SizedBox(height: 12),
                   _GlassField(
                     controller: nomeController,
@@ -161,12 +174,15 @@ class _CadastroIndicadorPageState extends State<CadastroIndicadorPage> {
                     label: 'descrição',
                     hint: 'o que esse indicador ajuda a acompanhar?',
                     icon: Icons.notes_rounded,
-                    maxLines: 4,
                     maxLength: 160,
                     validator: _validarDescricao,
                   ),
                   const SizedBox(height: 24),
-                  _SectionLabel(index: '02', title: 'origem do dado', caption: 'aponte para a fonte que alimenta essa leitura.'),
+                  _SectionLabel(
+                    index: '02',
+                    title: 'origem do dado',
+                    caption: 'aponte para a fonte que alimenta essa leitura.',
+                  ),
                   const SizedBox(height: 12),
                   _GlassField(
                     controller: urlController,
@@ -180,15 +196,33 @@ class _CadastroIndicadorPageState extends State<CadastroIndicadorPage> {
                   const SizedBox(height: 9),
                   Row(
                     children: [
-                      const Icon(Icons.lock_outline_rounded, size: 13, color: Color(0xff8ca69a)),
+                      const Icon(
+                        Icons.lock_outline_rounded,
+                        size: 13,
+                        color: AppColors.inkMuted,
+                      ),
                       const SizedBox(width: 6),
-                      Text('aceitamos apenas fontes com conexão segura', style: TextStyle(color: Colors.white.withValues(alpha: .48), fontSize: 10)),
+                      Text(
+                        'aceitamos apenas fontes com conexão segura',
+                        style: TextStyle(
+                          color: Colors.white.withValues(alpha: .48),
+                          fontSize: 10,
+                        ),
+                      ),
                     ],
                   ),
                   const SizedBox(height: 28),
                   _SaveButton(salvando: salvando, onPressed: salvar),
                   const SizedBox(height: 15),
-                  Center(child: Text('os dados ficam nesta sessão por enquanto.', style: TextStyle(color: Colors.white.withValues(alpha: .38), fontSize: 10))),
+                  Center(
+                    child: Text(
+                      'os dados ficam nesta sessão por enquanto.',
+                      style: TextStyle(
+                        color: Colors.white.withValues(alpha: .38),
+                        fontSize: 10,
+                      ),
+                    ),
+                  ),
                 ],
               ),
             ),
@@ -204,20 +238,28 @@ class _CadastroBackground extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => Container(
-        decoration: const BoxDecoration(
-          gradient: LinearGradient(
-            begin: Alignment.topLeft,
-            end: Alignment.bottomRight,
-            colors: [Color(0xff27192b), Color(0xff100d16), Color(0xff14231d)],
-          ),
+    decoration: const BoxDecoration(
+      gradient: LinearGradient(
+        begin: Alignment.topLeft,
+        end: Alignment.bottomRight,
+        colors: [AppColors.mineralRaised, AppColors.mineral, AppColors.surface],
+      ),
+    ),
+    child: Stack(
+      children: [
+        Positioned(
+          top: -90,
+          right: -55,
+          child: _GlowOrb(size: 220, color: AppColors.moss),
         ),
-        child: Stack(
-          children: [
-            Positioned(top: -90, right: -55, child: _GlowOrb(size: 220, color: Color(0xff8ebd84))),
-            Positioned(bottom: 80, left: -120, child: _GlowOrb(size: 270, color: Color(0xff765dd1))),
-          ],
+        Positioned(
+          bottom: 80,
+          left: -120,
+          child: _GlowOrb(size: 270, color: AppColors.mossStrong),
         ),
-      );
+      ],
+    ),
+  );
 }
 
 class _GlowOrb extends StatelessWidget {
@@ -228,14 +270,20 @@ class _GlowOrb extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => Container(
-        width: size,
-        height: size,
-        decoration: BoxDecoration(
-          shape: BoxShape.circle,
-          color: color.withValues(alpha: .1),
-          boxShadow: [BoxShadow(color: color.withValues(alpha: .24), blurRadius: 110, spreadRadius: 25)],
+    width: size,
+    height: size,
+    decoration: BoxDecoration(
+      shape: BoxShape.circle,
+      color: color.withValues(alpha: .1),
+      boxShadow: [
+        BoxShadow(
+          color: color.withValues(alpha: .24),
+          blurRadius: 110,
+          spreadRadius: 25,
         ),
-      );
+      ],
+    ),
+  );
 }
 
 class _PageIntro extends StatelessWidget {
@@ -243,10 +291,18 @@ class _PageIntro extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => const Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text('cadastro de indicador', style: TextStyle(color: Color(0xffb8d5a8), fontSize: 12, fontWeight: FontWeight.w600, letterSpacing: .5)),
-          SizedBox(height: 8),
+    crossAxisAlignment: CrossAxisAlignment.start,
+    children: [
+      Text(
+        'cadastro de indicador',
+        style: TextStyle(
+          color: AppColors.moss,
+          fontSize: 12,
+          fontWeight: FontWeight.w600,
+          letterSpacing: .5,
+        ),
+      ),
+      SizedBox(height: 8),
       Text(
         'dê nome ao que merece atenção.',
         style: TextStyle(
@@ -256,10 +312,13 @@ class _PageIntro extends StatelessWidget {
           letterSpacing: -1.2,
         ),
       ),
-          SizedBox(height: 11),
-          Text('crie uma nova lente para enxergar a operação com mais clareza.', style: TextStyle(color: Color(0xffb9acb8), fontSize: 12, height: 1.4)),
-        ],
-      );
+      SizedBox(height: 11),
+      Text(
+        'crie uma nova lente para enxergar a operação com mais clareza.',
+        style: TextStyle(color: AppColors.inkMuted, fontSize: 12, height: 1.4),
+      ),
+    ],
+  );
 }
 
 class _PreviewCard extends StatelessWidget {
@@ -270,37 +329,73 @@ class _PreviewCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => ClipRRect(
-        borderRadius: BorderRadius.circular(22),
-        child: BackdropFilter(
-          filter: ImageFilter.blur(sigmaX: 18, sigmaY: 18),
-          child: Container(
-            padding: const EdgeInsets.all(16),
-            decoration: BoxDecoration(
-              gradient: LinearGradient(colors: [Colors.white.withValues(alpha: .12), Colors.white.withValues(alpha: .035)]),
-              borderRadius: BorderRadius.circular(22),
-              border: Border.all(color: Colors.white.withValues(alpha: .13)),
-            ),
-            child: Row(
-              children: [
-                Container(
-                  width: 44,
-                  height: 44,
-                  decoration: BoxDecoration(color: const Color(0xffb8d5a8).withValues(alpha: .14), borderRadius: BorderRadius.circular(15)),
-                  child: const Icon(Icons.auto_graph_rounded, color: Color(0xffc6e1b9), size: 22),
-                ),
-                const SizedBox(width: 12),
-                Expanded(
-                  child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                    Text(nome.trim().isEmpty ? 'seu indicador aparece aqui' : nome.trim(), maxLines: 1, overflow: TextOverflow.ellipsis, style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w600)),
-                    const SizedBox(height: 5),
-                    Text(descricao.trim().isEmpty ? 'a prévia acompanha o que você digita.' : descricao.trim(), maxLines: 2, overflow: TextOverflow.ellipsis, style: const TextStyle(color: Color(0xffaaa9a9), fontSize: 11, height: 1.3)),
-                  ]),
-                ),
-              ],
-            ),
+    borderRadius: BorderRadius.circular(22),
+    child: BackdropFilter(
+      filter: ImageFilter.blur(sigmaX: 18, sigmaY: 18),
+      child: Container(
+        padding: const EdgeInsets.all(16),
+        decoration: BoxDecoration(
+          gradient: LinearGradient(
+            colors: [
+              Colors.white.withValues(alpha: .12),
+              Colors.white.withValues(alpha: .035),
+            ],
           ),
+          borderRadius: BorderRadius.circular(22),
+          border: Border.all(color: Colors.white.withValues(alpha: .13)),
         ),
-      );
+        child: Row(
+          children: [
+            Container(
+              width: 44,
+              height: 44,
+              decoration: BoxDecoration(
+                color: AppColors.moss.withValues(alpha: .14),
+                borderRadius: BorderRadius.circular(15),
+              ),
+              child: const Icon(
+                Icons.auto_graph_rounded,
+                color: AppColors.ink,
+                size: 22,
+              ),
+            ),
+            const SizedBox(width: 12),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    nome.trim().isEmpty
+                        ? 'seu indicador aparece aqui'
+                        : nome.trim(),
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    style: const TextStyle(
+                      fontSize: 14,
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                  const SizedBox(height: 5),
+                  Text(
+                    descricao.trim().isEmpty
+                        ? 'a prévia acompanha o que você digita.'
+                        : descricao.trim(),
+                    maxLines: 2,
+                    overflow: TextOverflow.ellipsis,
+                    style: const TextStyle(
+                      color: AppColors.inkMuted,
+                      fontSize: 11,
+                      height: 1.3,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
+      ),
+    ),
+  );
 }
 
 class _SectionLabel extends StatelessWidget {
@@ -308,17 +403,43 @@ class _SectionLabel extends StatelessWidget {
   final String title;
   final String caption;
 
-  const _SectionLabel({required this.index, required this.title, required this.caption});
+  const _SectionLabel({
+    required this.index,
+    required this.title,
+    required this.caption,
+  });
 
   @override
   Widget build(BuildContext context) => Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(index, style: const TextStyle(color: Color(0xffb8d5a8), fontSize: 11, fontWeight: FontWeight.w700)),
-          const SizedBox(width: 11),
-          Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [Text(title, style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w600)), const SizedBox(height: 3), Text(caption, style: const TextStyle(color: Color(0xff9e9ba2), fontSize: 10))])),
-        ],
-      );
+    crossAxisAlignment: CrossAxisAlignment.start,
+    children: [
+      Text(
+        index,
+        style: const TextStyle(
+          color: AppColors.moss,
+          fontSize: 11,
+          fontWeight: FontWeight.w700,
+        ),
+      ),
+      const SizedBox(width: 11),
+      Expanded(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              title,
+              style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w600),
+            ),
+            const SizedBox(height: 3),
+            Text(
+              caption,
+              style: const TextStyle(color: AppColors.inkMuted, fontSize: 10),
+            ),
+          ],
+        ),
+      ),
+    ],
+  );
 }
 
 class _GlassField extends StatelessWidget {
@@ -326,48 +447,69 @@ class _GlassField extends StatelessWidget {
   final String label;
   final String hint;
   final IconData icon;
-  final int maxLines;
   final int? maxLength;
   final TextInputType? keyboardType;
   final TextInputAction? textInputAction;
-  final bool obscureText;
-  final Widget? suffixIcon;
   final String? Function(String?)? validator;
 
-  const _GlassField({required this.controller, required this.label, required this.hint, required this.icon, this.maxLines = 1, this.maxLength, this.keyboardType, this.textInputAction, this.obscureText = false, this.suffixIcon, this.validator});
+  const _GlassField({
+    required this.controller,
+    required this.label,
+    required this.hint,
+    required this.icon,
+    this.maxLength,
+    this.keyboardType,
+    this.textInputAction,
+    this.validator,
+  });
 
   @override
   Widget build(BuildContext context) => TextFormField(
-        controller: controller,
-        maxLines: maxLines,
-        maxLength: maxLength,
-        keyboardType: keyboardType,
-        textInputAction: textInputAction,
-        obscureText: obscureText,
-        validator: validator,
-        style: const TextStyle(color: Color(0xfff1ebe9), fontSize: 13),
-        cursorColor: const Color(0xffb8d5a8),
-        decoration: InputDecoration(
-          labelText: label,
-          hintText: hint,
-          hintStyle: const TextStyle(color: Color(0xff77737d), fontSize: 12),
-          labelStyle: const TextStyle(color: Color(0xffa99eae), fontSize: 12),
-          floatingLabelStyle: const TextStyle(color: Color(0xffc6e1b9), fontSize: 12),
-          prefixIcon: Padding(padding: const EdgeInsets.only(left: 13, right: 8), child: Icon(icon, color: const Color(0xff91a99b), size: 19)),
-          prefixIconConstraints: const BoxConstraints(minWidth: 48),
-          suffixIcon: suffixIcon,
-          filled: true,
-          fillColor: Colors.white.withValues(alpha: .055),
-          contentPadding: const EdgeInsets.symmetric(horizontal: 15, vertical: 15),
-          border: OutlineInputBorder(borderRadius: BorderRadius.circular(16), borderSide: BorderSide(color: Colors.white.withValues(alpha: .1))),
-          enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(16), borderSide: BorderSide(color: Colors.white.withValues(alpha: .1))),
-          focusedBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(16), borderSide: const BorderSide(color: Color(0xff9ec58f), width: 1.2)),
-          errorBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(16), borderSide: const BorderSide(color: Color(0xffe49aaa))),
-          focusedErrorBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(16), borderSide: const BorderSide(color: Color(0xffe49aaa), width: 1.2)),
-          errorStyle: const TextStyle(color: Color(0xffffaebd), fontSize: 10),
-          counterStyle: const TextStyle(color: Color(0xff77737d), fontSize: 10),
-        ),
-      );
+    controller: controller,
+    maxLength: maxLength,
+    keyboardType: keyboardType,
+    textInputAction: textInputAction,
+    validator: validator,
+    style: const TextStyle(color: AppColors.ink, fontSize: 13),
+    cursorColor: AppColors.moss,
+    decoration: InputDecoration(
+      labelText: label,
+      hintText: hint,
+      hintStyle: const TextStyle(color: AppColors.inkMuted, fontSize: 12),
+      labelStyle: const TextStyle(color: AppColors.inkMuted, fontSize: 12),
+      floatingLabelStyle: const TextStyle(color: AppColors.moss, fontSize: 12),
+      prefixIcon: Padding(
+        padding: const EdgeInsets.only(left: 13, right: 8),
+        child: Icon(icon, color: AppColors.inkMuted, size: 19),
+      ),
+      prefixIconConstraints: const BoxConstraints(minWidth: 48),
+      filled: true,
+      fillColor: Colors.white.withValues(alpha: .055),
+      contentPadding: const EdgeInsets.symmetric(horizontal: 15, vertical: 15),
+      border: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(16),
+        borderSide: BorderSide(color: Colors.white.withValues(alpha: .1)),
+      ),
+      enabledBorder: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(16),
+        borderSide: BorderSide(color: Colors.white.withValues(alpha: .1)),
+      ),
+      focusedBorder: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(16),
+        borderSide: const BorderSide(color: AppColors.moss, width: 1.2),
+      ),
+      errorBorder: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(16),
+        borderSide: const BorderSide(color: AppColors.critical),
+      ),
+      focusedErrorBorder: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(16),
+        borderSide: const BorderSide(color: AppColors.critical, width: 1.2),
+      ),
+      errorStyle: const TextStyle(color: AppColors.critical, fontSize: 10),
+      counterStyle: const TextStyle(color: AppColors.inkMuted, fontSize: 10),
+    ),
+  );
 }
 
 class _SaveButton extends StatelessWidget {
@@ -378,20 +520,32 @@ class _SaveButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => SizedBox(
-        height: 54,
-        child: ElevatedButton.icon(
-          onPressed: salvando ? null : onPressed,
-          icon: salvando ? const SizedBox(width: 17, height: 17, child: CircularProgressIndicator(strokeWidth: 2, color: Color(0xff203225))) : const Icon(Icons.check_rounded, size: 19),
-          label: Text(salvando ? 'salvando...' : 'salvar indicador', style: const TextStyle(fontWeight: FontWeight.w700, fontSize: 13)),
-          style: ElevatedButton.styleFrom(
-            foregroundColor: const Color(0xff203225),
-            backgroundColor: const Color(0xffb8d5a8),
-            disabledBackgroundColor: const Color(0xff789273),
-            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(17)),
-            elevation: 0,
-          ),
-        ),
-      );
+    height: 54,
+    child: ElevatedButton.icon(
+      onPressed: salvando ? null : onPressed,
+      icon: salvando
+          ? const SizedBox(
+              width: 17,
+              height: 17,
+              child: CircularProgressIndicator(
+                strokeWidth: 2,
+                color: AppColors.mineral,
+              ),
+            )
+          : const Icon(Icons.check_rounded, size: 19),
+      label: Text(
+        salvando ? 'salvando...' : 'salvar indicador',
+        style: const TextStyle(fontWeight: FontWeight.w700, fontSize: 13),
+      ),
+      style: ElevatedButton.styleFrom(
+        foregroundColor: AppColors.mineral,
+        backgroundColor: AppColors.moss,
+        disabledBackgroundColor: AppColors.mossStrong,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(17)),
+        elevation: 0,
+      ),
+    ),
+  );
 }
 
 class CadastroIndicadorForm extends CadastroIndicadorPage {
