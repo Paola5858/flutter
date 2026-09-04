@@ -1,4 +1,4 @@
-import '../lib/models/domain.dart';
+import 'package:usina_app/models/domain.dart';
 
 void main() {
   final agora = DateTime.now();

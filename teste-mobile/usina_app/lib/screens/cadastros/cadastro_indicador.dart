@@ -247,8 +247,15 @@ class _PageIntro extends StatelessWidget {
         children: [
           Text('cadastro de indicador', style: TextStyle(color: Color(0xffb8d5a8), fontSize: 12, fontWeight: FontWeight.w600, letterSpacing: .5)),
           SizedBox(height: 8),
-          Text('dê nome ao que
-merece atenção.', style: TextStyle(fontSize: 31, height: 1.04, fontWeight: FontWeight.w600, letterSpacing: -1.2)),
+      Text(
+        'dê nome ao que merece atenção.',
+        style: TextStyle(
+          fontSize: 31,
+          height: 1.04,
+          fontWeight: FontWeight.w600,
+          letterSpacing: -1.2,
+        ),
+      ),
           SizedBox(height: 11),
           Text('crie uma nova lente para enxergar a operação com mais clareza.', style: TextStyle(color: Color(0xffb9acb8), fontSize: 12, height: 1.4)),
         ],
