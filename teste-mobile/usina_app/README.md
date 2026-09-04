@@ -12,7 +12,9 @@ Os modelos possuem serialização JSON onde prevista no diagrama. `Medicao` calc
 
 A tela inicial usa fundo ameixa/grafite, superfícies translúcidas com blur, bordas sutis, acentos rosa queimado e lavanda, cartões de leitura, barra de progresso, status de meta e filtro por dia, semana, mês e safra. Todo o texto da interface segue a escrita em minúsculas pedida para o produto.
 
-A atividade do menu principal foi integrada diretamente ao dashboard. O AppBar agora abre um drawer com estética natural em verde musgo, cabeçalho da usina, estado visual do item ativo e submenu expansível de cadastro com unidade, setor, equipamento, indicador, funcionário, tipo de medição e parâmetro. Como as telas de cadastro ainda serão criadas nas próximas etapas, cada item mostra uma confirmação breve por SnackBar sem fingir que existe uma navegação pronta.
+A atividade do menu principal foi integrada diretamente ao dashboard. O AppBar agora abre um drawer com estética natural em verde musgo, cabeçalho da usina, estado visual do item ativo e submenu expansível de cadastro com unidade, setor, equipamento, indicador, funcionário, tipo de medição e parâmetro. Os itens ainda não implementados exibem um feedback contextual, enquanto `indicador` abre a tela de cadastro real.
+
+A tela `CadastroIndicadorPage` segue o mesmo sistema visual do produto e inclui preview em tempo real, campos para nome, descrição e url, contador de caracteres, validações específicas, exigência de conexão `https`, estado de salvamento, limpeza do formulário, mensagens de erro e retorno do objeto `Indicador` criado. Nesta etapa a sessão mantém o objeto em memória, sem banco ou API, conforme o manual.
 
 ## execução
 

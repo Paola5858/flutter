@@ -4,6 +4,7 @@ import '../cadastros.dart';
 import '../models/domain.dart';
 import '../screens/cadastro_screen.dart';
 import '../widgets/indicador_card.dart';
+import 'cadastros/cadastro_indicador.dart';
 
 class DashboardScreen extends StatefulWidget {
   final DashboardExtracao dashboard;
@@ -44,14 +45,31 @@ class _DashboardScreenState extends State<DashboardScreen> {
         backgroundColor: const Color(0xff111a17),
         child: _MenuPrincipal(
           itemSelecionado: itemSelecionado,
-        onItemSelected: (item) {
-          Navigator.of(context).pop();
-          final config = cadastros[item];
-          if (config != null) {
+          onItemSelected: (item) async {
+            Navigator.of(context).pop();
+            if (item == 'indicador') {
+              setState(() => itemSelecionado = item);
+              final indicador = await Navigator.of(context).push<Indicador>(
+                MaterialPageRoute(builder: (_) => const CadastroIndicadorPage()),
+              );
+              if (!mounted || indicador == null) return;
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(
+                  content: Text('${indicador.nome} entrou na sua central de indicadores.'),
+                  behavior: SnackBarBehavior.floating,
+                  backgroundColor: const Color(0xff2c6149),
+                ),
+              );
+              return;
+            }
+            final config = cadastros[item];
+            if (config != null) {
+              setState(() => itemSelecionado = item);
+              await Navigator.of(context).push(MaterialPageRoute(builder: (_) => CadastroScreen(config: config)));
+              return;
+            }
             setState(() => itemSelecionado = item);
-            Navigator.of(context).push(MaterialPageRoute(builder: (_) => CadastroScreen(config: config)));
-          }
-        },
+          },
         ),
       ),
       body: Stack(
