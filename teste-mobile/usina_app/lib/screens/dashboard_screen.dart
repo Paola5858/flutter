@@ -3,9 +3,11 @@ import 'package:flutter/material.dart';
 import '../cadastros.dart';
 import '../core/theme/app_tokens.dart';
 import '../models/domain.dart';
+import '../models/usuario.dart';
 import '../screens/cadastro_screen.dart';
 import '../widgets/indicador_card.dart';
 import 'cadastros/cadastro_indicador.dart';
+import 'cadastros/cadastro_usuario.dart';
 
 class DashboardScreen extends StatefulWidget {
   final DashboardExtracao dashboard;
@@ -61,6 +63,21 @@ class _DashboardScreenState extends State<DashboardScreen> {
                   content: Text(
                     '${indicador.nome} entrou na sua central de indicadores.',
                   ),
+                  behavior: SnackBarBehavior.floating,
+                  backgroundColor: const Color(0xff2c6149),
+                ),
+              );
+              return;
+            }
+            if (item == 'usuário') {
+              setState(() => itemSelecionado = item);
+              final usuario = await Navigator.of(context).push<Usuario>(
+                MaterialPageRoute(builder: (_) => const CadastroUsuarioPage()),
+              );
+              if (!mounted || usuario == null) return;
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(
+                  content: Text('${usuario.nome} agora faz parte da operação.'),
                   behavior: SnackBarBehavior.floating,
                   backgroundColor: const Color(0xff2c6149),
                 ),
@@ -192,7 +209,7 @@ class _MenuPrincipalState extends State<_MenuPrincipal> {
     ('setor', Icons.view_quilt_outlined),
     ('equipamento', Icons.precision_manufacturing_outlined),
     ('indicador', Icons.insights_rounded),
-    ('funcionário', Icons.badge_outlined),
+    ('usuário', Icons.person_outline_rounded),
     ('tipo de medição', Icons.tune_rounded),
     ('parâmetro', Icons.settings_suggest_outlined),
   ];
