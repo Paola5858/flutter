@@ -1,6 +1,10 @@
-import 'dart:io';
-import 'dart:ui';
-
+import 'package:camera/camera.dart'
+    show
+        CameraController,
+        CameraException,
+        CameraPreview,
+        ResolutionPreset,
+        availableCameras;
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:image_picker/image_picker.dart';
@@ -24,6 +28,7 @@ class _CadastroUsuarioPageState extends State<CadastroUsuarioPage> {
   final ImagePicker picker = ImagePicker();
 
   XFile? fotoSelecionada;
+  Uint8List? fotoBytes;
   bool senhaVisivel = false;
   bool salvando = false;
   bool carregandoFoto = false;
@@ -39,8 +44,17 @@ class _CadastroUsuarioPageState extends State<CadastroUsuarioPage> {
     if (!mounted || resposta.isEmpty) return;
     final arquivos = resposta.files;
     if (arquivos != null && arquivos.isNotEmpty) {
-      setState(() => fotoSelecionada = arquivos.first);
+      await _definirFoto(arquivos.first);
     }
+  }
+
+  Future<void> _definirFoto(XFile foto) async {
+    final bytes = await foto.readAsBytes();
+    if (!mounted) return;
+    setState(() {
+      fotoSelecionada = foto;
+      fotoBytes = bytes;
+    });
   }
 
   void mostrarMensagem(String mensagem, {bool erro = false}) {
@@ -59,7 +73,7 @@ class _CadastroUsuarioPageState extends State<CadastroUsuarioPage> {
     try {
       final imagem = await picker.pickImage(source: source, imageQuality: 85, maxWidth: 1200);
       if (!mounted) return;
-      if (imagem != null) setState(() => fotoSelecionada = imagem);
+      if (imagem != null) await _definirFoto(imagem);
     } on PlatformException catch (erro) {
       mostrarMensagem(
         source == ImageSource.camera ? 'não foi possível acessar a câmera: ${erro.message ?? erro.code}' : 'não foi possível abrir suas fotos: ${erro.message ?? erro.code}',
@@ -74,7 +88,30 @@ class _CadastroUsuarioPageState extends State<CadastroUsuarioPage> {
 
   Future<void> selecionarFoto() => _selecionarFoto(ImageSource.gallery);
 
-  Future<void> tirarFoto() => _selecionarFoto(ImageSource.camera);
+  Future<void> tirarFoto() async {
+    Navigator.pop(context);
+    setState(() => carregandoFoto = true);
+    try {
+      final imagem = await showDialog<XFile>(
+        context: context,
+        barrierDismissible: false,
+        builder: (_) => const _CameraCaptureDialog(),
+      );
+      if (imagem != null) await _definirFoto(imagem);
+    } on CameraException catch (erro) {
+      mostrarMensagem(
+        'não foi possível acessar a câmera: ${erro.description ?? erro.code}',
+        erro: true,
+      );
+    } catch (_) {
+      mostrarMensagem(
+        'não foi possível capturar essa imagem. tente outra vez.',
+        erro: true,
+      );
+    } finally {
+      if (mounted) setState(() => carregandoFoto = false);
+    }
+  }
 
   Future<void> _abrirOpcoesFoto() async {
     await showModalBottomSheet<void>(
@@ -89,16 +126,41 @@ class _CadastroUsuarioPageState extends State<CadastroUsuarioPage> {
             const SizedBox(height: 20),
             const Align(alignment: Alignment.centerLeft, child: Text('como você quer aparecer?', style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600))),
             const SizedBox(height: 5),
-            const Align(alignment: Alignment.centerLeft, child: Text('escolha uma imagem que represente você na operação.', style: TextStyle(color: Color(0xff9eaca4), fontSize: 11))),
+              const Align(
+                alignment: Alignment.centerLeft,
+                child: Text(
+                  'escolha uma imagem que represente você na operação.',
+                  style: TextStyle(color: Color(0xff9aa9a1), fontSize: 11),
+                ),
+              ),
             const SizedBox(height: 19),
             Row(children: [
               Expanded(child: _SourceButton(icon: Icons.photo_library_outlined, label: 'galeria', onTap: () { Navigator.pop(context); selecionarFoto(); })),
               const SizedBox(width: 12),
-              Expanded(child: _SourceButton(icon: Icons.camera_alt_outlined, label: 'câmera', onTap: () { Navigator.pop(context); tirarFoto(); })),
+                  Expanded(
+                    child: _SourceButton(
+                      icon: Icons.camera_alt_outlined,
+                      label: 'câmera',
+                      onTap: tirarFoto,
+                    ),
+                  ),
             ]),
             if (fotoSelecionada != null) ...[
               const SizedBox(height: 10),
-              TextButton.icon(onPressed: () { setState(() => fotoSelecionada = null); Navigator.pop(context); }, icon: const Icon(Icons.delete_outline_rounded, size: 17), label: const Text('remover foto'), style: TextButton.styleFrom(foregroundColor: const Color(0xffffafbd))),
+                TextButton.icon(
+                  onPressed: () {
+                    setState(() {
+                      fotoSelecionada = null;
+                      fotoBytes = null;
+                    });
+                    Navigator.pop(context);
+                  },
+                  icon: const Icon(Icons.delete_outline_rounded, size: 17),
+                  label: const Text('remover foto'),
+                  style: TextButton.styleFrom(
+                    foregroundColor: const Color(0xffffafbd),
+                  ),
+                ),
             ],
           ]),
         ),
@@ -158,23 +220,53 @@ class _CadastroUsuarioPageState extends State<CadastroUsuarioPage> {
 
   @override
   Widget build(BuildContext context) => Scaffold(
-        backgroundColor: const Color(0xff100d16),
+    backgroundColor: const Color(0xff0d1211),
         appBar: AppBar(
           backgroundColor: Colors.transparent,
           elevation: 0,
           scrolledUnderElevation: 0,
           leading: IconButton(icon: const Icon(Icons.arrow_back_rounded), onPressed: () => Navigator.of(context).pop()),
           title: const Text('novo usuário', style: TextStyle(fontSize: 14, fontWeight: FontWeight.w600)),
-          actions: [IconButton(tooltip: 'limpar formulário', icon: const Icon(Icons.refresh_rounded, size: 20), onPressed: () { formKey.currentState?.reset(); nomeController.clear(); emailController.clear(); senhaController.clear(); setState(() => fotoSelecionada = null); }), const SizedBox(width: 8)],
+      actions: [
+        IconButton(
+          tooltip: 'limpar formulário',
+          icon: const Icon(Icons.refresh_rounded, size: 20),
+          onPressed: () {
+            formKey.currentState?.reset();
+            nomeController.clear();
+            emailController.clear();
+            senhaController.clear();
+            setState(() {
+              fotoSelecionada = null;
+              fotoBytes = null;
+            });
+          },
+        ),
+        const SizedBox(width: 8),
+      ],
         ),
         body: Stack(children: [
           const _UsuarioBackground(),
           SafeArea(top: false, child: Form(key: formKey, child: ListView(padding: const EdgeInsets.fromLTRB(20, 12, 20, 34), children: [
             const _UsuarioIntro(),
             const SizedBox(height: 22),
-            _AvatarPicker(foto: fotoSelecionada, carregando: carregandoFoto, onTap: _abrirOpcoesFoto),
+                _AvatarPicker(
+                  fotoBytes: fotoBytes,
+                  carregando: carregandoFoto,
+                  onTap: _abrirOpcoesFoto,
+                ),
             const SizedBox(height: 8),
-            Center(child: Text(fotoSelecionada == null ? 'adicione uma foto para personalizar seu perfil' : 'foto pronta para o seu perfil', style: const TextStyle(color: Color(0xff9eaca4), fontSize: 10))),
+                Center(
+                  child: Text(
+                    fotoSelecionada == null
+                        ? 'adicione uma foto para personalizar seu perfil'
+                        : 'foto pronta para o seu perfil',
+                    style: const TextStyle(
+                      color: Color(0xff9aa9a1),
+                      fontSize: 10,
+                    ),
+                  ),
+                ),
             const SizedBox(height: 26),
             const _FieldSection(index: '01', title: 'quem está na operação?', caption: 'seu nome aparece nas próximas interações do app.'),
             const SizedBox(height: 12),
@@ -199,7 +291,29 @@ class _CadastroUsuarioPageState extends State<CadastroUsuarioPage> {
 class _UsuarioBackground extends StatelessWidget {
   const _UsuarioBackground();
   @override
-  Widget build(BuildContext context) => Container(decoration: const BoxDecoration(gradient: LinearGradient(begin: Alignment.topLeft, end: Alignment.bottomRight, colors: [Color(0xff27192b), Color(0xff100d16), Color(0xff14231d)])), child: Stack(children: [Positioned(top: -90, right: -55, child: _UsuarioGlow(size: 220, color: Color(0xff8ebd84))), Positioned(bottom: 80, left: -120, child: _UsuarioGlow(size: 270, color: Color(0xff765dd1)))]));
+  Widget build(BuildContext context) => Container(
+    decoration: const BoxDecoration(
+      gradient: LinearGradient(
+        begin: Alignment.topLeft,
+        end: Alignment.bottomRight,
+        colors: [Color(0xff172820), Color(0xff101614), Color(0xff0d1211)],
+      ),
+    ),
+    child: Stack(
+      children: [
+        Positioned(
+          top: -90,
+          right: -55,
+          child: _UsuarioGlow(size: 220, color: Color(0xff8bb77f)),
+        ),
+        Positioned(
+          bottom: 80,
+          left: -120,
+          child: _UsuarioGlow(size: 270, color: Color(0xff456b4f)),
+        ),
+      ],
+    ),
+  );
 }
 
 class _UsuarioGlow extends StatelessWidget {
@@ -213,16 +327,245 @@ class _UsuarioGlow extends StatelessWidget {
 class _UsuarioIntro extends StatelessWidget {
   const _UsuarioIntro();
   @override
-  Widget build(BuildContext context) => const Column(crossAxisAlignment: CrossAxisAlignment.start, children: [Text('cadastro de usuário', style: TextStyle(color: Color(0xffb8d5a8), fontSize: 12, fontWeight: FontWeight.w600, letterSpacing: .5)), SizedBox(height: 8), Text('uma pessoa real\npor trás dos dados.', style: TextStyle(fontSize: 31, height: 1.04, fontWeight: FontWeight.w600, letterSpacing: -1.2)), SizedBox(height: 11), Text('crie seu acesso e deixe a operação reconhecer quem faz acontecer.', style: TextStyle(color: Color(0xffb9acb8), fontSize: 12, height: 1.4))]);
+  Widget build(BuildContext context) => const Column(
+    crossAxisAlignment: CrossAxisAlignment.start,
+    children: [
+      Text(
+        'cadastro de usuário',
+        style: TextStyle(
+          color: Color(0xffb8d5a8),
+          fontSize: 12,
+          fontWeight: FontWeight.w600,
+          letterSpacing: .5,
+        ),
+      ),
+      SizedBox(height: 8),
+      Text(
+        'uma pessoa real\npor trás dos dados.',
+        style: TextStyle(
+          fontSize: 31,
+          height: 1.04,
+          fontWeight: FontWeight.w600,
+          letterSpacing: -1.2,
+        ),
+      ),
+      SizedBox(height: 11),
+      Text(
+        'crie seu acesso e deixe a operação reconhecer quem faz acontecer.',
+        style: TextStyle(color: Color(0xffaab8ae), fontSize: 12, height: 1.4),
+      ),
+    ],
+  );
+}
+
+class _CameraCaptureDialog extends StatefulWidget {
+  const _CameraCaptureDialog();
+
+  @override
+  State<_CameraCaptureDialog> createState() => _CameraCaptureDialogState();
+}
+
+class _CameraCaptureDialogState extends State<_CameraCaptureDialog> {
+  CameraController? controller;
+  String? erro;
+
+  @override
+  void initState() {
+    super.initState();
+    _inicializarCamera();
+  }
+
+  Future<void> _inicializarCamera() async {
+    try {
+      final cameras = await availableCameras();
+      if (cameras.isEmpty) {
+        setState(() => erro = 'nenhuma câmera disponível neste dispositivo.');
+        return;
+      }
+      final camera = cameras.firstWhere(
+        (item) => item.lensDirection.name == 'front',
+        orElse: () => cameras.first,
+      );
+      final novoController = CameraController(
+        camera,
+        ResolutionPreset.medium,
+        enableAudio: false,
+      );
+      await novoController.initialize();
+      if (!mounted) {
+        await novoController.dispose();
+        return;
+      }
+      setState(() => controller = novoController);
+    } on CameraException catch (exception) {
+      if (mounted) {
+        setState(() => erro = exception.description ?? exception.code);
+      }
+    } catch (_) {
+      if (mounted) {
+        setState(() => erro = 'não foi possível iniciar a câmera.');
+      }
+    }
+  }
+
+  @override
+  void dispose() {
+    controller?.dispose();
+    super.dispose();
+  }
+
+  Future<void> _capturar() async {
+    final camera = controller;
+    if (camera == null ||
+        !camera.value.isInitialized ||
+        camera.value.isTakingPicture) {
+      return;
+    }
+    final foto = await camera.takePicture();
+    if (mounted) Navigator.of(context).pop(foto);
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final camera = controller;
+    return Dialog(
+      backgroundColor: const Color(0xff0d1211),
+      insetPadding: const EdgeInsets.all(18),
+      child: ConstrainedBox(
+        constraints: const BoxConstraints(maxWidth: 520, maxHeight: 680),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Padding(
+              padding: const EdgeInsets.fromLTRB(18, 16, 10, 12),
+              child: Row(
+                children: [
+                  const Expanded(
+                    child: Text(
+                      'capturar foto',
+                      style: TextStyle(
+                        fontSize: 18,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                  ),
+                  IconButton(
+                    onPressed: () => Navigator.of(context).pop(),
+                    icon: const Icon(Icons.close_rounded),
+                  ),
+                ],
+              ),
+            ),
+            Flexible(
+              child: AspectRatio(
+                aspectRatio: camera?.value.isInitialized == true
+                    ? camera!.value.aspectRatio
+                    : 1,
+                child: erro != null
+                    ? Center(
+                        child: Padding(
+                          padding: const EdgeInsets.all(24),
+                          child: Text(erro!, textAlign: TextAlign.center),
+                        ),
+                      )
+                    : camera?.value.isInitialized == true
+                    ? CameraPreview(camera!)
+                    : const Center(
+                        child: CircularProgressIndicator(
+                          color: Color(0xffb8d5a8),
+                        ),
+                      ),
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.all(18),
+              child: FilledButton.icon(
+                onPressed: camera?.value.isInitialized == true
+                    ? _capturar
+                    : null,
+                icon: const Icon(Icons.camera_alt_rounded),
+                label: const Text('capturar'),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
 }
 
 class _AvatarPicker extends StatelessWidget {
-  final XFile? foto;
+  final Uint8List? fotoBytes;
   final bool carregando;
   final VoidCallback onTap;
-  const _AvatarPicker({required this.foto, required this.carregando, required this.onTap});
+  const _AvatarPicker({
+    required this.fotoBytes,
+    required this.carregando,
+    required this.onTap,
+  });
   @override
-  Widget build(BuildContext context) => Center(child: GestureDetector(onTap: carregando ? null : onTap, child: Stack(alignment: Alignment.bottomRight, children: [Container(width: 128, height: 128, padding: const EdgeInsets.all(4), decoration: BoxDecoration(shape: BoxShape.circle, gradient: const LinearGradient(colors: [Color(0xffb8d5a8), Color(0xff547861)]), boxShadow: [BoxShadow(color: const Color(0xff9cc390).withValues(alpha: .22), blurRadius: 28, spreadRadius: 3)]), child: ClipOval(child: foto == null ? Container(color: const Color(0xff294735), child: const Icon(Icons.person_rounded, color: Color(0xffd9ecd1), size: 60)) : Image.file(File(foto!.path), fit: BoxFit.cover))), Container(width: 38, height: 38, decoration: BoxDecoration(color: const Color(0xffb8d5a8), shape: BoxShape.circle, border: Border.all(color: const Color(0xff172820), width: 3)), child: carregando ? const Padding(padding: EdgeInsets.all(9), child: CircularProgressIndicator(strokeWidth: 2, color: Color(0xff203225))) : const Icon(Icons.add_a_photo_outlined, size: 17, color: Color(0xff203225)))])));
+  Widget build(BuildContext context) => Center(
+    child: GestureDetector(
+      onTap: carregando ? null : onTap,
+      child: Stack(
+        alignment: Alignment.bottomRight,
+        children: [
+          Container(
+            width: 128,
+            height: 128,
+            padding: const EdgeInsets.all(4),
+            decoration: BoxDecoration(
+              shape: BoxShape.circle,
+              gradient: const LinearGradient(
+                colors: [Color(0xffb8d5a8), Color(0xff456b4f)],
+              ),
+              boxShadow: [
+                BoxShadow(
+                  color: const Color(0xff9cc390).withValues(alpha: .22),
+                  blurRadius: 28,
+                  spreadRadius: 3,
+                ),
+              ],
+            ),
+            child: ClipOval(
+              child: fotoBytes == null
+                  ? Container(
+                      color: const Color(0xff294735),
+                      child: const Icon(
+                        Icons.person_rounded,
+                        color: Color(0xffd9ecd1),
+                        size: 60,
+                      ),
+                    )
+                  : Image.memory(fotoBytes!, fit: BoxFit.cover),
+            ),
+          ),
+          Container(
+            width: 38,
+            height: 38,
+            decoration: BoxDecoration(
+              color: const Color(0xffb8d5a8),
+              shape: BoxShape.circle,
+              border: Border.all(color: const Color(0xff172820), width: 3),
+            ),
+            child: carregando
+                ? const Padding(
+                    padding: EdgeInsets.all(9),
+                    child: CircularProgressIndicator(
+                      strokeWidth: 2,
+                      color: Color(0xff203225),
+                    ),
+                  )
+                : const Icon(
+                    Icons.add_a_photo_outlined,
+                    size: 17,
+                    color: Color(0xff203225),
+                  ),
+          ),
+        ],
+      ),
+    ),
+  );
 }
 
 class _SourceButton extends StatelessWidget {
@@ -254,8 +597,62 @@ class _GlassUserField extends StatelessWidget {
   final Widget? suffixIcon;
   final String? Function(String?)? validator;
   const _GlassUserField({required this.controller, required this.label, required this.hint, required this.icon, this.keyboardType, this.textInputAction, this.obscureText = false, this.suffixIcon, this.validator});
+
   @override
-  Widget build(BuildContext context) => TextFormField(controller: controller, keyboardType: keyboardType, textInputAction: textInputAction, obscureText: obscureText, validator: validator, style: const TextStyle(color: Color(0xfff1ebe9), fontSize: 13), cursorColor: const Color(0xffb8d5a8), decoration: InputDecoration(labelText: label, hintText: hint, hintStyle: const TextStyle(color: Color(0xff77737d), fontSize: 12), labelStyle: const TextStyle(color: Color(0xffa99eae), fontSize: 12), floatingLabelStyle: const TextStyle(color: Color(0xffc6e1b9), fontSize: 12), prefixIcon: Padding(padding: const EdgeInsets.only(left: 13, right: 8), child: Icon(icon, color: const Color(0xff91a99b), size: 19)), prefixIconConstraints: const BoxConstraints(minWidth: 48), suffixIcon: suffixIcon, filled: true, fillColor: Colors.white.withValues(alpha: .055), contentPadding: const EdgeInsets.symmetric(horizontal: 15, vertical: 15), border: OutlineInputBorder(borderRadius: BorderRadius.circular(16), borderSide: BorderSide(color: Colors.white.withValues(alpha: .1))), enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(16), borderSide: BorderSide(color: Colors.white.withValues(alpha: .1))), focusedBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(16), borderSide: const BorderSide(color: Color(0xff9ec58f), width: 1.2)), errorBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(16), borderSide: const BorderSide(color: Color(0xffe49aaa))), focusedErrorBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(16), borderSide: const BorderSide(color: Color(0xffe49aaa), width: 1.2)), errorStyle: const TextStyle(color: Color(0xffffaebd), fontSize: 10));
+  Widget build(BuildContext context) {
+    return TextFormField(
+      controller: controller,
+      keyboardType: keyboardType,
+      textInputAction: textInputAction,
+      obscureText: obscureText,
+      validator: validator,
+      style: const TextStyle(color: Color(0xfff1ebe9), fontSize: 13),
+      cursorColor: const Color(0xffb8d5a8),
+      decoration: InputDecoration(
+        labelText: label,
+        hintText: hint,
+        hintStyle: const TextStyle(color: Color(0xff77737d), fontSize: 12),
+        labelStyle: const TextStyle(color: Color(0xffa99eae), fontSize: 12),
+        floatingLabelStyle: const TextStyle(
+          color: Color(0xffc6e1b9),
+          fontSize: 12,
+        ),
+        prefixIcon: Padding(
+          padding: const EdgeInsets.only(left: 13, right: 8),
+          child: Icon(icon, color: const Color(0xff91a99b), size: 19),
+        ),
+        prefixIconConstraints: const BoxConstraints(minWidth: 48),
+        suffixIcon: suffixIcon,
+        filled: true,
+        fillColor: Colors.white.withValues(alpha: .055),
+        contentPadding: const EdgeInsets.symmetric(
+          horizontal: 15,
+          vertical: 15,
+        ),
+        border: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(16),
+          borderSide: BorderSide(color: Colors.white.withValues(alpha: .1)),
+        ),
+        enabledBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(16),
+          borderSide: BorderSide(color: Colors.white.withValues(alpha: .1)),
+        ),
+        focusedBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(16),
+          borderSide: const BorderSide(color: Color(0xff9ec58f), width: 1.2),
+        ),
+        errorBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(16),
+          borderSide: const BorderSide(color: Color(0xffe49aaa)),
+        ),
+        focusedErrorBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(16),
+          borderSide: const BorderSide(color: Color(0xffe49aaa), width: 1.2),
+        ),
+        errorStyle: const TextStyle(color: Color(0xffffaebd), fontSize: 10),
+      ),
+    );
+  }
 }
 
 class _UserSaveButton extends StatelessWidget {
