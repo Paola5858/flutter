@@ -38,6 +38,12 @@ abstract final class AppShadows {
   ];
 }
 
+abstract final class AppSurfaces {
+  static const glassTop = Color(0x1AFFFFFF);
+  static const glassBottom = Color(0x09FFFFFF);
+  static const glassBorder = Color(0x1FFFFFFF);
+}
+
 abstract final class AppMotion {
   static const fast = Duration(milliseconds: 180);
   static const standard = Duration(milliseconds: 260);

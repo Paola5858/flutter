@@ -1,6 +1,7 @@
-import 'dart:ui';
 import 'package:flutter/material.dart';
 import '../cadastros.dart';
+import '../core/theme/app_tokens.dart';
+import '../widgets/app/app_surface.dart';
 
 class CadastroScreen extends StatefulWidget {
   final CadastroConfig config;
@@ -21,7 +22,9 @@ class _CadastroScreenState extends State<CadastroScreen> {
     super.initState();
     for (final campo in widget.config.campos) {
       if (campo.tipo == TipoCampo.seleciona) {
-        _selecionados[campo.rotulo] = campo.opcoes.isNotEmpty ? campo.opcoes.first : null;
+        _selecionados[campo.rotulo] = campo.opcoes.isNotEmpty
+            ? campo.opcoes.first
+            : null;
       } else {
         _controllers[campo.rotulo] = TextEditingController();
       }
@@ -42,7 +45,7 @@ class _CadastroScreenState extends State<CadastroScreen> {
         SnackBar(
           content: Text('${widget.config.titulo} registrado com sucesso.'),
           behavior: SnackBarBehavior.floating,
-          backgroundColor: const Color(0xff294735),
+          backgroundColor: AppColors.mineralSoft,
         ),
       );
       Navigator.of(context).pop();
@@ -62,7 +65,10 @@ class _CadastroScreenState extends State<CadastroScreen> {
           icon: const Icon(Icons.arrow_back_rounded),
           onPressed: () => Navigator.of(context).pop(),
         ),
-        title: Text(config.titulo, style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w600)),
+        title: Text(
+          config.titulo,
+          style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w600),
+        ),
       ),
       body: Stack(
         children: [
@@ -71,53 +77,61 @@ class _CadastroScreenState extends State<CadastroScreen> {
             child: CustomScrollView(
               slivers: [
                 SliverPadding(
-                  padding: const EdgeInsets.fromLTRB(20, 18, 20, 34),
+                  padding: const EdgeInsets.fromLTRB(
+                    AppSpacing.xl,
+                    AppSpacing.lg,
+                    AppSpacing.xl,
+                    AppSpacing.page,
+                  ),
                   sliver: SliverList(
                     delegate: SliverChildListDelegate([
                       _Cabecalho(config: config),
                       const SizedBox(height: 24),
-                      ClipRRect(
-                        borderRadius: BorderRadius.circular(24),
-                        child: BackdropFilter(
-                          filter: ImageFilter.blur(sigmaX: 18, sigmaY: 18),
-                          child: Container(
-                            padding: const EdgeInsets.all(18),
-                            decoration: BoxDecoration(
-                              gradient: LinearGradient(colors: [Colors.white.withValues(alpha: .1), Colors.white.withValues(alpha: .035)]),
-                              borderRadius: BorderRadius.circular(24),
-                              border: Border.all(color: Colors.white.withValues(alpha: .13)),
-                            ),
-                            child: Form(
-                              key: _formKey,
-                              child: Column(
-                                children: [
-                                  for (final campo in config.campos) ...[
-                                    _Campo(
-                                      campo: campo,
-                                      controller: _controllers[campo.rotulo],
-                                      valorSelecionado: _selecionados[campo.rotulo],
-                                      aoSelecionar: (valor) => setState(() => _selecionados[campo.rotulo] = valor),
+                      AppSurface(
+                        padding: const EdgeInsets.all(AppSpacing.lg),
+                        child: Form(
+                          key: _formKey,
+                          child: Column(
+                            children: [
+                              for (final campo in config.campos) ...[
+                                _Campo(
+                                  campo: campo,
+                                  controller: _controllers[campo.rotulo],
+                                  valorSelecionado: _selecionados[campo.rotulo],
+                                  aoSelecionar: (valor) => setState(
+                                    () => _selecionados[campo.rotulo] = valor,
+                                  ),
+                                ),
+                                const SizedBox(height: 16),
+                              ],
+                              const SizedBox(height: 6),
+                              SizedBox(
+                                width: double.infinity,
+                                child: ElevatedButton(
+                                  onPressed: _salvar,
+                                  style: ElevatedButton.styleFrom(
+                                    backgroundColor: const Color(0xffb8d5a8),
+                                    foregroundColor: const Color(0xff13211a),
+                                    padding: const EdgeInsets.symmetric(
+                                      vertical: AppSpacing.md,
                                     ),
-                                    const SizedBox(height: 16),
-                                  ],
-                                  const SizedBox(height: 6),
-                                  SizedBox(
-                                    width: double.infinity,
-                                    child: ElevatedButton(
-                                      onPressed: _salvar,
-                                      style: ElevatedButton.styleFrom(
-                                        backgroundColor: const Color(0xffb8d5a8),
-                                        foregroundColor: const Color(0xff13211a),
-                                        padding: const EdgeInsets.symmetric(vertical: 15),
-                                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-                                        elevation: 0,
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(
+                                        AppRadii.md,
                                       ),
-                                      child: const Text('salvar', style: TextStyle(fontSize: 14, fontWeight: FontWeight.w600)),
+                                    ),
+                                    elevation: 0,
+                                  ),
+                                  child: const Text(
+                                    'salvar',
+                                    style: TextStyle(
+                                      fontSize: 14,
+                                      fontWeight: FontWeight.w600,
                                     ),
                                   ),
-                                ],
+                                ),
                               ),
-                            ),
+                            ],
                           ),
                         ),
                       ),
@@ -139,32 +153,57 @@ class _Cabecalho extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => Container(
-        padding: const EdgeInsets.all(18),
-        decoration: BoxDecoration(
-          gradient: const LinearGradient(colors: [Color(0xff456b4f), Color(0xff294735)]),
-          borderRadius: BorderRadius.circular(25),
-          border: Border.all(color: const Color(0xffb8d5a8).withValues(alpha: .22)),
-          boxShadow: [BoxShadow(color: const Color(0xff8bb77f).withValues(alpha: .13), blurRadius: 28, offset: const Offset(0, 12))],
+    padding: const EdgeInsets.all(18),
+    decoration: BoxDecoration(
+      gradient: const LinearGradient(
+        colors: [Color(0xff456b4f), Color(0xff294735)],
+      ),
+      borderRadius: BorderRadius.circular(25),
+      border: Border.all(color: const Color(0xffb8d5a8).withValues(alpha: .22)),
+      boxShadow: [
+        BoxShadow(
+          color: const Color(0xff8bb77f).withValues(alpha: .13),
+          blurRadius: 28,
+          offset: const Offset(0, 12),
         ),
-        child: Row(
-          children: [
-            Container(
-              width: 46,
-              height: 46,
-              decoration: BoxDecoration(color: const Color(0x28ffffff), borderRadius: BorderRadius.circular(15)),
-              child: Icon(config.icone, color: const Color(0xffe3f1d9), size: 24),
-            ),
-            const SizedBox(width: 14),
-            Expanded(
-              child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                Text('novo ${config.titulo}', style: const TextStyle(color: Color(0xfff1f8eb), fontSize: 18, fontWeight: FontWeight.w600, letterSpacing: -.4)),
-                const SizedBox(height: 4),
-                Text(config.subtitulo, style: const TextStyle(color: Color(0xffc6dec1), fontSize: 11)),
-              ]),
-            ),
-          ],
+      ],
+    ),
+    child: Row(
+      children: [
+        Container(
+          width: 46,
+          height: 46,
+          decoration: BoxDecoration(
+            color: const Color(0x28ffffff),
+            borderRadius: BorderRadius.circular(15),
+          ),
+          child: Icon(config.icone, color: const Color(0xffe3f1d9), size: 24),
         ),
-      );
+        const SizedBox(width: 14),
+        Expanded(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                'novo ${config.titulo}',
+                style: const TextStyle(
+                  color: Color(0xfff1f8eb),
+                  fontSize: 18,
+                  fontWeight: FontWeight.w600,
+                  letterSpacing: -.4,
+                ),
+              ),
+              const SizedBox(height: 4),
+              Text(
+                config.subtitulo,
+                style: const TextStyle(color: Color(0xffc6dec1), fontSize: 11),
+              ),
+            ],
+          ),
+        ),
+      ],
+    ),
+  );
 }
 
 class _Campo extends StatelessWidget {
@@ -173,7 +212,12 @@ class _Campo extends StatelessWidget {
   final String? valorSelecionado;
   final ValueChanged<String?> aoSelecionar;
 
-  const _Campo({required this.campo, this.controller, this.valorSelecionado, required this.aoSelecionar});
+  const _Campo({
+    required this.campo,
+    this.controller,
+    this.valorSelecionado,
+    required this.aoSelecionar,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -191,12 +235,25 @@ class _Campo extends StatelessWidget {
           fillColor: Colors.white.withValues(alpha: .06),
           border: borda,
           enabledBorder: borda,
-          focusedBorder: borda.copyWith(borderSide: const BorderSide(color: Color(0xffb8d5a8))),
+          focusedBorder: borda.copyWith(
+            borderSide: const BorderSide(color: Color(0xffb8d5a8)),
+          ),
         ),
         dropdownColor: const Color(0xff172820),
         style: const TextStyle(color: Color(0xffe8f3e2), fontSize: 13),
         items: campo.opcoes
-            .map((opcao) => DropdownMenuItem(value: opcao, child: Text(opcao, style: const TextStyle(color: Color(0xffe8f3e2), fontSize: 13))))
+            .map(
+              (opcao) => DropdownMenuItem(
+                value: opcao,
+                child: Text(
+                  opcao,
+                  style: const TextStyle(
+                    color: Color(0xffe8f3e2),
+                    fontSize: 13,
+                  ),
+                ),
+              ),
+            )
             .toList(),
         onChanged: aoSelecionar,
       );
@@ -205,7 +262,9 @@ class _Campo extends StatelessWidget {
     final isNumero = campo.tipo == TipoCampo.numero;
     return TextFormField(
       controller: controller,
-      keyboardType: isNumero ? const TextInputType.numberWithOptions(decimal: true) : TextInputType.text,
+      keyboardType: isNumero
+          ? const TextInputType.numberWithOptions(decimal: true)
+          : TextInputType.text,
       style: const TextStyle(color: Color(0xffe8f3e2), fontSize: 13),
       decoration: InputDecoration(
         labelText: campo.rotulo,
@@ -216,12 +275,16 @@ class _Campo extends StatelessWidget {
         fillColor: Colors.white.withValues(alpha: .06),
         border: borda,
         enabledBorder: borda,
-        focusedBorder: borda.copyWith(borderSide: const BorderSide(color: Color(0xffb8d5a8))),
+        focusedBorder: borda.copyWith(
+          borderSide: const BorderSide(color: Color(0xffb8d5a8)),
+        ),
       ),
       validator: (valor) {
         final texto = valor?.trim() ?? '';
         if (texto.isEmpty) return 'informe ${campo.rotulo.toLowerCase()}';
-        if (isNumero && double.tryParse(texto.replaceAll(',', '.')) == null) return 'valor inválido';
+        if (isNumero && double.tryParse(texto.replaceAll(',', '.')) == null) {
+          return 'valor inválido';
+        }
         return null;
       },
     );
@@ -233,14 +296,28 @@ class _FundoVerde extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => Container(
-        decoration: const BoxDecoration(
-          gradient: LinearGradient(begin: Alignment.topLeft, end: Alignment.bottomRight, colors: [Color(0xff172820), Color(0xff0d1211), Color(0xff101614)]),
+    decoration: const BoxDecoration(
+      gradient: LinearGradient(
+        begin: Alignment.topLeft,
+        end: Alignment.bottomRight,
+        colors: [Color(0xff172820), Color(0xff0d1211), Color(0xff101614)],
+      ),
+    ),
+    child: Stack(
+      children: [
+        Positioned(
+          top: -90,
+          right: -50,
+          child: _GlowVerde(size: 230, color: Color(0xff8bb77f)),
         ),
-        child: Stack(children: [
-          Positioned(top: -90, right: -50, child: _GlowVerde(size: 230, color: Color(0xff8bb77f))),
-          Positioned(bottom: -110, left: -90, child: _GlowVerde(size: 260, color: Color(0xff456b4f))),
-        ]),
-      );
+        Positioned(
+          bottom: -110,
+          left: -90,
+          child: _GlowVerde(size: 260, color: Color(0xff456b4f)),
+        ),
+      ],
+    ),
+  );
 }
 
 class _GlowVerde extends StatelessWidget {
@@ -249,12 +326,18 @@ class _GlowVerde extends StatelessWidget {
   const _GlowVerde({required this.size, required this.color});
   @override
   Widget build(BuildContext context) => Container(
-        width: size,
-        height: size,
-        decoration: BoxDecoration(
-          shape: BoxShape.circle,
-          color: color.withValues(alpha: .12),
-          boxShadow: [BoxShadow(color: color.withValues(alpha: .2), blurRadius: 100, spreadRadius: 25)],
+    width: size,
+    height: size,
+    decoration: BoxDecoration(
+      shape: BoxShape.circle,
+      color: color.withValues(alpha: .12),
+      boxShadow: [
+        BoxShadow(
+          color: color.withValues(alpha: .2),
+          blurRadius: 100,
+          spreadRadius: 25,
         ),
-      );
+      ],
+    ),
+  );
 }

@@ -4,7 +4,6 @@ import '../cadastros.dart';
 import '../core/theme/app_tokens.dart';
 import '../models/domain.dart';
 import '../models/usuario.dart';
-import '../screens/cadastro_screen.dart';
 import '../widgets/indicador_card.dart';
 import 'cadastros/cadastro_indicador.dart';
 import 'cadastros/cadastro_usuario.dart';
@@ -54,6 +53,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
               setState(() => itemSelecionado = item);
               final indicador = await Navigator.of(context).push<Indicador>(
                 MaterialPageRoute(
+                  settings: const RouteSettings(name: '/cadastro/indicador'),
                   builder: (_) => const CadastroIndicadorPage(),
                 ),
               );
@@ -72,9 +72,12 @@ class _DashboardScreenState extends State<DashboardScreen> {
             if (item == 'usuário') {
               setState(() => itemSelecionado = item);
               final usuario = await Navigator.of(context).push<Usuario>(
-                MaterialPageRoute(builder: (_) => const CadastroUsuarioPage()),
+                MaterialPageRoute(
+                  settings: const RouteSettings(name: '/cadastro/usuario'),
+                  builder: (_) => const CadastroUsuarioPage(),
+                ),
               );
-              if (!mounted || usuario == null) return;
+              if (!context.mounted || usuario == null) return;
               ScaffoldMessenger.of(context).showSnackBar(
                 SnackBar(
                   content: Text('${usuario.nome} agora faz parte da operação.'),
@@ -87,11 +90,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
             final config = cadastros[item];
             if (config != null) {
               setState(() => itemSelecionado = item);
-              await Navigator.of(context).push(
-                MaterialPageRoute(
-                  builder: (_) => CadastroScreen(config: config),
-                ),
-              );
+              await Navigator.of(context).pushNamed('/cadastro/$item');
               if (!context.mounted) return;
               return;
             }
@@ -209,6 +208,7 @@ class _MenuPrincipalState extends State<_MenuPrincipal> {
     ('setor', Icons.view_quilt_outlined),
     ('equipamento', Icons.precision_manufacturing_outlined),
     ('indicador', Icons.insights_rounded),
+    ('funcionário', Icons.badge_outlined),
     ('usuário', Icons.person_outline_rounded),
     ('tipo de medição', Icons.tune_rounded),
     ('parâmetro', Icons.settings_suggest_outlined),

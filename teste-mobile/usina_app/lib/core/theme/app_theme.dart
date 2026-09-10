@@ -3,7 +3,36 @@ import 'package:flutter/material.dart';
 import 'app_tokens.dart';
 
 abstract final class AppTypography {
-  static const family = 'Avenir Next';
+  static const family = 'Roboto';
+
+  static const pageTitle = TextStyle(
+    fontSize: 24,
+    height: 1.15,
+    fontWeight: FontWeight.w600,
+  );
+  static const sectionTitle = TextStyle(
+    fontSize: 21,
+    height: 1.2,
+    fontWeight: FontWeight.w600,
+  );
+  static const metric = TextStyle(
+    fontSize: 31,
+    height: .9,
+    fontWeight: FontWeight.w600,
+  );
+  static const metricUnit = TextStyle(fontSize: 13, height: 1.2);
+  static const metadata = TextStyle(fontSize: 10, height: 1.2);
+  static const status = TextStyle(
+    fontSize: 10,
+    height: 1.2,
+    fontWeight: FontWeight.w600,
+  );
+  static const button = TextStyle(
+    fontSize: 13,
+    height: 1.2,
+    fontWeight: FontWeight.w600,
+  );
+  static const caption = TextStyle(fontSize: 11, height: 1.2);
 
   static TextTheme get textTheme => const TextTheme(
     displaySmall: TextStyle(
@@ -57,7 +86,7 @@ abstract final class AppTheme {
       colorScheme: scheme,
       scaffoldBackgroundColor: AppColors.mineral,
       fontFamily: AppTypography.family,
-      fontFamilyFallback: const ['Helvetica Neue', 'sans-serif'],
+      fontFamilyFallback: const ['Arial', 'sans-serif'],
       textTheme: AppTypography.textTheme.apply(
         bodyColor: AppColors.ink,
         displayColor: AppColors.ink,

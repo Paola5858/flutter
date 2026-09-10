@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import '../core/theme/app_theme.dart';
+import '../core/theme/app_tokens.dart';
 import '../models/domain.dart';
 import 'app/app_surface.dart';
 
@@ -17,7 +19,7 @@ class IndicadorCard extends StatelessWidget {
     final color = _statusColor(status);
     return AppSurface(
       padding: const EdgeInsets.fromLTRB(17, 16, 17, 15),
-      borderRadius: BorderRadius.circular(22),
+      borderRadius: BorderRadius.circular(AppRadii.xl),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -41,10 +43,7 @@ class IndicadorCard extends StatelessWidget {
               Expanded(
                 child: Text(
                   indicador.nome,
-                  style: const TextStyle(
-                    color: Color(0xffe8f3e2),
-                    fontSize: 13,
-                    fontWeight: FontWeight.w600,
+                  style: AppTypography.button.copyWith(color: AppColors.ink,
                   ),
                 ),
               ),
@@ -57,21 +56,15 @@ class IndicadorCard extends StatelessWidget {
             children: [
               Text(
                 medicao.valor.toStringAsFixed(1),
-                style: const TextStyle(
-                  fontSize: 31,
-                  height: .9,
-                  fontWeight: FontWeight.w600,
-                  letterSpacing: -1,
-                ),
+                style: AppTypography.metric.copyWith(letterSpacing: -1),
               ),
               const SizedBox(width: 7),
               Padding(
                 padding: const EdgeInsets.only(bottom: 2),
                 child: Text(
                   indicador.tipoInformacao.unidadeMedida.simbolo,
-                  style: const TextStyle(
-                    color: Color(0xffb7c3bd),
-                    fontSize: 13,
+                  style: AppTypography.metricUnit.copyWith(
+                    color: AppColors.inkMuted,
                   ),
                 ),
               ),
@@ -79,17 +72,18 @@ class IndicadorCard extends StatelessWidget {
               Column(
                 crossAxisAlignment: CrossAxisAlignment.end,
                 children: [
-                  const Text(
+                  Text(
                     'meta',
-                    style: TextStyle(color: Color(0xff9aa9a1), fontSize: 10),
+                    style: AppTypography.metadata.copyWith(
+                      color: AppColors.inkMuted,
+                    ),
                   ),
                   const SizedBox(height: 3),
                   Text(
                     '${indicador.metaValor.toStringAsFixed(0)} ${indicador.tipoInformacao.unidadeMedida.simbolo}',
-                    style: const TextStyle(
-                      color: Color(0xffdcebd5),
+                    style: AppTypography.button.copyWith(
+                      color: AppColors.ink,
                       fontSize: 12,
-                      fontWeight: FontWeight.w600,
                     ),
                   ),
                 ],
@@ -115,8 +109,8 @@ class IndicadorCard extends StatelessWidget {
                 _statusLabel(status),
                 style: TextStyle(
                   color: color,
-                  fontSize: 10,
-                  fontWeight: FontWeight.w600,
+                  fontSize: AppTypography.status.fontSize,
+                  fontWeight: AppTypography.status.fontWeight,
                 ),
               ),
             ],
@@ -127,16 +121,15 @@ class IndicadorCard extends StatelessWidget {
               const Icon(
                 Icons.factory_outlined,
                 size: 12,
-                color: Color(0xff90a198),
+                color: AppColors.inkMuted,
               ),
               const SizedBox(width: 5),
               Expanded(
                 child: Text(
                   '${medicao.equipamento.unidade.usina.nome}  ›  ${medicao.equipamento.unidade.nome}  ›  ${medicao.equipamento.nome}',
                   overflow: TextOverflow.ellipsis,
-                  style: const TextStyle(
-                    color: Color(0xff90a198),
-                    fontSize: 10,
+                  style: AppTypography.metadata.copyWith(
+                    color: AppColors.inkMuted,
                   ),
                 ),
               ),
@@ -148,21 +141,22 @@ class IndicadorCard extends StatelessWidget {
               const Icon(
                 Icons.schedule_outlined,
                 size: 13,
-                color: Color(0xff90a198),
+                color: AppColors.inkMuted,
               ),
               const SizedBox(width: 5),
               Text(
                 _formatDate(medicao.data),
-                style: const TextStyle(color: Color(0xff90a198), fontSize: 10),
+                style: AppTypography.metadata.copyWith(
+                  color: AppColors.inkMuted,
+                ),
               ),
               const Spacer(),
               Flexible(
                 child: Text(
                   indicador.descricao,
                   overflow: TextOverflow.ellipsis,
-                  style: const TextStyle(
-                    color: Color(0xff9aa9a1),
-                    fontSize: 10,
+                  style: AppTypography.metadata.copyWith(
+                    color: AppColors.inkMuted,
                   ),
                 ),
               ),
@@ -202,13 +196,10 @@ class _StatusTag extends StatelessWidget {
       borderRadius: BorderRadius.circular(8),
       border: Border.all(color: color.withValues(alpha: .24)),
     ),
-    child: Text(
-      switch (status) {
-        StatusIndicador.dentroMeta => 'dentro da meta',
-        StatusIndicador.atencao => 'atenção',
-        StatusIndicador.foraMeta => 'fora da meta',
-      },
-      style: TextStyle(color: color, fontSize: 9, fontWeight: FontWeight.w600),
-    ),
+    child: Text(switch (status) {
+      StatusIndicador.dentroMeta => 'dentro da meta',
+      StatusIndicador.atencao => 'atenção',
+      StatusIndicador.foraMeta => 'fora da meta',
+    }, style: AppTypography.status.copyWith(color: color, fontSize: 9)),
   );
 }

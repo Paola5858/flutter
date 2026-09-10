@@ -40,11 +40,15 @@ class _CadastroUsuarioPageState extends State<CadastroUsuarioPage> {
   }
 
   Future<void> _recuperarImagemPerdida() async {
-    final resposta = await picker.retrieveLostData();
-    if (!mounted || resposta.isEmpty) return;
-    final arquivos = resposta.files;
-    if (arquivos != null && arquivos.isNotEmpty) {
-      await _definirFoto(arquivos.first);
+    try {
+      final resposta = await picker.retrieveLostData();
+      if (!mounted || resposta.isEmpty) return;
+      final arquivos = resposta.files;
+      if (arquivos != null && arquivos.isNotEmpty) {
+        await _definirFoto(arquivos.first);
+      }
+    } on UnimplementedError {
+      // A recuperação de seleção interrompida não existe no plugin web.
     }
   }
 

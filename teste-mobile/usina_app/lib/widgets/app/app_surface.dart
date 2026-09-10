@@ -27,12 +27,11 @@ class AppSurface extends StatelessWidget {
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
           colors: [
-            Colors.white.withValues(alpha: .105),
-            Colors.white.withValues(alpha: .035),
+              AppSurfaces.glassTop, AppSurfaces.glassBottom,
           ],
         ),
         borderRadius: borderRadius,
-        border: Border.all(color: Colors.white.withValues(alpha: .12)),
+        border: Border.all(color: AppSurfaces.glassBorder),
       ),
       child: child,
     );
