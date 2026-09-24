@@ -4,6 +4,7 @@ import '../cadastros.dart';
 import '../core/theme/app_tokens.dart';
 import '../models/domain.dart';
 import '../models/usuario.dart';
+import '../services/session_storage.dart';
 import '../widgets/indicador_card.dart';
 import 'cadastros/cadastro_indicador.dart';
 import 'cadastros/cadastro_usuario.dart';
@@ -20,6 +21,12 @@ class DashboardScreen extends StatefulWidget {
 class _DashboardScreenState extends State<DashboardScreen> {
   TipoPeriodo periodo = TipoPeriodo.dia;
   String itemSelecionado = 'início';
+
+  Future<void> _sair() async {
+    await const SessionStorage().clear();
+    if (!mounted) return;
+    Navigator.of(context).pushNamedAndRemoveUntil('/login', (route) => false);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -47,6 +54,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
         backgroundColor: AppColors.mineralRaised,
         child: _MenuPrincipal(
           itemSelecionado: itemSelecionado,
+          onLogout: _sair,
           onItemSelected: (item) async {
             Navigator.of(context).pop();
             if (item == 'indicador') {
@@ -189,10 +197,11 @@ class _DashboardScreenState extends State<DashboardScreen> {
 
 class _MenuPrincipal extends StatefulWidget {
   final String itemSelecionado;
+  final VoidCallback onLogout;
   final ValueChanged<String> onItemSelected;
-
   const _MenuPrincipal({
     required this.itemSelecionado,
+    required this.onLogout,
     required this.onItemSelected,
   });
 
@@ -302,6 +311,15 @@ class _MenuPrincipalState extends State<_MenuPrincipal> {
             ),
             const SizedBox(height: 22),
             const Divider(color: Color(0x1fffffff)),
+            const SizedBox(height: 14),
+            const _SessionCard(),
+            const SizedBox(height: 10),
+            _MenuItem(
+              icon: Icons.logout_rounded,
+              label: 'sair da sessão',
+              selected: false,
+              onTap: widget.onLogout,
+            ),
             const SizedBox(height: 10),
             const Text(
               'usina aurora  ·  safra 2026',
@@ -315,6 +333,52 @@ class _MenuPrincipalState extends State<_MenuPrincipal> {
 
   @override
   Widget build(BuildContext context) => montarMenu();
+}
+
+class _SessionCard extends StatelessWidget {
+  const _SessionCard();
+
+  @override
+  Widget build(BuildContext context) => FutureBuilder<SessionSnapshot>(
+        future: const SessionStorage().read(),
+        builder: (context, snapshot) {
+          final session = snapshot.data;
+          final hasLocation = session?.hasLocation ?? false;
+          return Container(
+            padding: const EdgeInsets.all(13),
+            decoration: BoxDecoration(
+              color: Colors.white.withValues(alpha: .045),
+              borderRadius: BorderRadius.circular(18),
+              border: Border.all(color: Colors.white.withValues(alpha: .08)),
+            ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
+                  children: [
+                    const Icon(Icons.verified_user_outlined, size: 16, color: Color(0xffb8d5a8)),
+                    const SizedBox(width: 7),
+                    const Expanded(child: Text('sessão local ativa', style: TextStyle(color: Color(0xffd9e8d2), fontSize: 11, fontWeight: FontWeight.w600))),
+                    Container(width: 7, height: 7, decoration: const BoxDecoration(color: Color(0xff8bc27c), shape: BoxShape.circle)),
+                  ],
+                ),
+                const SizedBox(height: 8),
+                Text(session?.email ?? 'usuário autenticado', style: const TextStyle(color: Color(0xff90a198), fontSize: 10)),
+                const SizedBox(height: 9),
+                Row(
+                  children: [
+                    Icon(hasLocation ? Icons.location_on_outlined : Icons.location_off_outlined, size: 14, color: hasLocation ? const Color(0xffb8d5a8) : const Color(0xff9b8172)),
+                    const SizedBox(width: 6),
+                    Expanded(child: Text(hasLocation ? '${formatCoordinate(session?.latitude)}, ${formatCoordinate(session?.longitude)}' : 'localização não capturada', style: TextStyle(color: hasLocation ? const Color(0xffb8d5a8) : const Color(0xff9b8172), fontSize: 10))),
+                  ],
+                ),
+                const SizedBox(height: 5),
+                Text(formatSessionDate(session?.loggedAt), style: const TextStyle(color: Color(0xff718079), fontSize: 9)),
+              ],
+            ),
+          );
+        },
+      );
 }
 
 class _MenuHeader extends StatelessWidget {
