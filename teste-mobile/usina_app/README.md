@@ -20,6 +20,8 @@ A tela `CadastroUsuarioPage` adiciona nome, e-mail, senha e foto de perfil. A im
 
 O fluxo de acesso agora começa em `LoginPage`, com credencial didática `aluno@usina.com` e senha `123456`. A sessão é persistida com `shared_preferences`, sem salvar a senha, e restaurada automaticamente ao reabrir o aplicativo. No momento do login, `geolocator` tenta capturar latitude e longitude, mas gps desligado, permissão recusada ou posição indisponível não impedem a entrada. O drawer mostra e-mail, data do acesso, estado das coordenadas e oferece logout, que limpa os dados da sessão.
 
+O item `dashboard power bi` abre `PowerBiScreen` em uma WebView com o relatório fornecido. A tela possui barra de progresso, atualização manual, tratamento de erro e bloqueio de navegação para domínios fora do fluxo autorizado do Power BI/Microsoft e do portal educacional identificado pelo próprio link. O relatório não foi publicado na web e nenhum token foi colocado no aplicativo. Como o endpoint redireciona para o login educacional, cada usuário ainda precisa ter uma conta autorizada no Power BI/portal; a sessão do login didático da usina não substitui a autenticação Microsoft.
+
 ## execução
 
 Na raiz de `teste-mobile/usina_app`, execute:

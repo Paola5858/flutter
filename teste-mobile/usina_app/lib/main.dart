@@ -10,6 +10,7 @@ import 'screens/cadastros/cadastro_indicador.dart';
 import 'screens/cadastros/cadastro_usuario.dart';
 import 'screens/dashboard_screen.dart';
 import 'screens/login_page.dart';
+import 'screens/power_bi_screen.dart';
 
 void main() {
   runApp(UsinaApp(dashboard: criarDashboardDemo()));
@@ -36,6 +37,7 @@ class UsinaApp extends StatelessWidget {
       routes: {
         '/dashboard': (_) => DashboardScreen(dashboard: dashboard),
         '/login': (_) => LoginPage(dashboard: dashboard),
+        '/power-bi': (_) => const PowerBiScreen(),
         '/cadastro/indicador': (_) => const CadastroIndicadorPage(),
         '/cadastro/usuario': (_) => const CadastroUsuarioPage(),
         for (final entry in cadastros.entries)

@@ -8,6 +8,7 @@ import '../services/session_storage.dart';
 import '../widgets/indicador_card.dart';
 import 'cadastros/cadastro_indicador.dart';
 import 'cadastros/cadastro_usuario.dart';
+import 'power_bi_screen.dart';
 
 class DashboardScreen extends StatefulWidget {
   final DashboardExtracao dashboard;
@@ -57,6 +58,16 @@ class _DashboardScreenState extends State<DashboardScreen> {
           onLogout: _sair,
           onItemSelected: (item) async {
             Navigator.of(context).pop();
+            if (item == 'power bi') {
+              setState(() => itemSelecionado = item);
+              await Navigator.of(context).push<void>(
+                MaterialPageRoute(
+                  settings: const RouteSettings(name: '/power-bi'),
+                  builder: (_) => const PowerBiScreen(),
+                ),
+              );
+              return;
+            }
             if (item == 'indicador') {
               setState(() => itemSelecionado = item);
               final indicador = await Navigator.of(context).push<Indicador>(
@@ -245,6 +256,13 @@ class _MenuPrincipalState extends State<_MenuPrincipal> {
               label: 'início',
               selected: widget.itemSelecionado == 'início',
               onTap: () => widget.onItemSelected('início'),
+            ),
+            const SizedBox(height: 6),
+            _MenuItem(
+              icon: Icons.insights_rounded,
+              label: 'dashboard power bi',
+              selected: widget.itemSelecionado == 'power bi',
+              onTap: () => widget.onItemSelected('power bi'),
             ),
             const SizedBox(height: 22),
             const _MenuSectionLabel(label: 'gestão da usina'),
