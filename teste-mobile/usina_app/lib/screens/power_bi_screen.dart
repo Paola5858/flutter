@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 
@@ -24,8 +25,6 @@ class _PowerBiScreenState extends State<PowerBiScreen> {
   void initState() {
     super.initState();
     _controller = WebViewController()
-      ..setJavaScriptMode(JavaScriptMode.unrestricted)
-      ..setBackgroundColor(AppColors.mineral)
       ..setNavigationDelegate(
         NavigationDelegate(
           onProgress: (progress) {
@@ -71,6 +70,10 @@ class _PowerBiScreenState extends State<PowerBiScreen> {
         ),
       )
       ..loadRequest(reportUri);
+    if (!kIsWeb) {
+      _controller.setJavaScriptMode(JavaScriptMode.unrestricted);
+      _controller.setBackgroundColor(AppColors.mineral);
+    }
   }
 
   bool _isAllowedHost(String host) {

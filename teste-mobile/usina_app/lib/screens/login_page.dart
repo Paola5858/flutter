@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 
@@ -26,6 +27,11 @@ class _LoginPageState extends State<LoginPage> {
   bool _locationNoticeShown = false;
 
   Future<Position?> _getLocation() async {
+    if (kIsWeb) {
+      _showLocationNotice('localização indisponível no navegador. o acesso continua sem coordenadas.');
+      return null;
+    }
+
     final serviceEnabled = await Geolocator.isLocationServiceEnabled();
     if (!serviceEnabled) {
       _showLocationNotice('gps desligado. o acesso continua sem coordenadas.');
@@ -99,7 +105,13 @@ class _LoginPageState extends State<LoginPage> {
       return;
     }
 
-    final position = await _getLocation();
+    final position = await _getLocation().timeout(
+      const Duration(seconds: 5),
+      onTimeout: () {
+        _showLocationNotice('localização indisponível. o acesso continua sem coordenadas.');
+        return null;
+      },
+    );
     await _storage.saveLogin(
       email: email,
       latitude: position?.latitude,
