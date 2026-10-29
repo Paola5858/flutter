@@ -22,6 +22,10 @@ O fluxo de acesso agora começa em `LoginPage`, com credencial didática `aluno@
 
 O item `dashboard power bi` abre `PowerBiScreen` em uma WebView com o relatório fornecido. A tela possui barra de progresso, atualização manual, tratamento de erro e bloqueio de navegação para domínios fora do fluxo autorizado do Power BI/Microsoft e do portal educacional identificado pelo próprio link. O relatório não foi publicado na web e nenhum token foi colocado no aplicativo. Como o endpoint redireciona para o login educacional, cada usuário ainda precisa ter uma conta autorizada no Power BI/portal; a sessão do login didático da usina não substitui a autenticação Microsoft.
 
+Os seis CRUDs da atividade foram estruturados em `CrudPage`, `CrudEditorPage`, `CrudService` e `crud_models.dart`. O fluxo inclui GET, POST, PUT e DELETE para safra, unidade, unidade de medida, equipamento, tipo de informação e medição. Há busca local na listagem, estados de carregamento, erro, lista vazia, atualização por gesto, confirmação antes da exclusão e feedback de sucesso ou falha. Equipamento, tipo de informação e medição carregam suas chaves estrangeiras por dropdown antes de permitir o envio.
+
+A API é configurável por `--dart-define=USINA_API_BASE_URL=...`; por padrão, o Android Emulator usa `http://10.0.2.2:1880`. O projeto mantém `http://` apenas para o laboratório Node-RED, com `usesCleartextTraffic` delimitado ao build didático. Em apresentação externa ou produção, substitua por HTTPS e remova essa exceção. Nenhum endpoint foi tratado como confirmado além das rotas descritas no manual, e a mensagem da API é preservada quando o servidor retorna erro.
+
 ## execução
 
 Na raiz de `teste-mobile/usina_app`, execute:

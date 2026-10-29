@@ -8,6 +8,7 @@ import '../services/session_storage.dart';
 import '../widgets/indicador_card.dart';
 import 'cadastros/cadastro_indicador.dart';
 import 'cadastros/cadastro_usuario.dart';
+import 'cadastros/crud_page.dart';
 import 'power_bi_screen.dart';
 
 class DashboardScreen extends StatefulWidget {
@@ -65,6 +66,23 @@ class _DashboardScreenState extends State<DashboardScreen> {
                   settings: const RouteSettings(name: '/power-bi'),
                   builder: (_) => const PowerBiScreen(),
                 ),
+              );
+              return;
+            }
+            const crudKeys = {
+              'safra': 'safra',
+              'unidade': 'unidade',
+              'unidade de medida': 'unidadeMedida',
+              'equipamento': 'equipamento',
+              'tipo de informação': 'tipo',
+              'medição': 'medicao',
+            };
+            final crudKey = crudKeys[item];
+            if (crudKey != null) {
+              setState(() => itemSelecionado = item);
+              final resource = crudResources.firstWhere((item) => item.keyName == crudKey);
+              await Navigator.of(context).push<void>(
+                MaterialPageRoute(builder: (_) => CrudPage(resource: resource)),
               );
               return;
             }
@@ -224,9 +242,13 @@ class _MenuPrincipalState extends State<_MenuPrincipal> {
   bool cadastroAberto = false;
 
   static const itensCadastro = [
+    ('safra', Icons.calendar_month_outlined),
     ('unidade', Icons.account_tree_outlined),
+    ('unidade de medida', Icons.straighten_outlined),
     ('setor', Icons.view_quilt_outlined),
     ('equipamento', Icons.precision_manufacturing_outlined),
+    ('tipo de informação', Icons.data_object_rounded),
+    ('medição', Icons.monitor_heart_outlined),
     ('indicador', Icons.insights_rounded),
     ('funcionário', Icons.badge_outlined),
     ('usuário', Icons.person_outline_rounded),

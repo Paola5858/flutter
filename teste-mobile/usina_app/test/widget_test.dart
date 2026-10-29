@@ -1,10 +1,15 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:usina_app/main.dart';
 import 'package:usina_app/screens/cadastros/cadastro_indicador.dart';
 import 'package:usina_app/screens/cadastros/cadastro_usuario.dart';
 
 void main() {
+  setUp(() {
+    SharedPreferences.setMockInitialValues({'loginRealizado': true});
+  });
+
   testWidgets('dashboard de extração inicializa sem erros', (
     WidgetTester tester,
   ) async {
@@ -25,8 +30,12 @@ void main() {
     await tester.pumpAndSettle();
 
     expect(find.text('indicador'), findsOneWidget);
+    expect(find.text('safra'), findsOneWidget);
     expect(find.text('unidade'), findsOneWidget);
+    expect(find.text('unidade de medida'), findsOneWidget);
     expect(find.text('equipamento'), findsOneWidget);
+    expect(find.text('tipo de informação'), findsOneWidget);
+    expect(find.text('medição'), findsOneWidget);
     expect(find.text('funcionário'), findsOneWidget);
     expect(find.text('usuário'), findsOneWidget);
     expect(find.text('tipo de medição'), findsOneWidget);
@@ -67,9 +76,7 @@ void main() {
     await tester.pumpWidget(UsinaApp(dashboard: criarDashboardDemo()));
 
     for (final cadastro in const [
-      'unidade',
       'setor',
-      'equipamento',
       'tipo de medição',
       'parâmetro',
     ]) {
