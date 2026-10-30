@@ -1,5 +1,6 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:usina_app/models/crud_models.dart';
+import 'package:usina_app/models/indicador.dart';
 
 void main() {
   test('safra serializa datas no formato esperado pela api', () {
@@ -31,5 +32,23 @@ void main() {
     expect(json['TipoInformacaoId'], 3);
     expect(json['Valor'], 1250.5);
     expect(json['Data'], '2026-10-28T14:30:00.000');
+  });
+
+  test('indicador aceita contrato PascalCase e camelCase', () {
+    final pascal = IndicadorRest.fromJson(const {
+      'Id': 7,
+      'Nome': 'produção',
+      'Descricao': 'volume do turno',
+      'Url': 'https://exemplo.com/bi',
+    });
+    final camel = IndicadorRest.fromJson(const {
+      'id': 8,
+      'nome': 'temperatura',
+      'descricao': 'média da linha',
+      'url': 'https://exemplo.com/temp',
+    });
+
+    expect(pascal.toJson()['Nome'], 'produção');
+    expect(camel.id, 8);
   });
 }

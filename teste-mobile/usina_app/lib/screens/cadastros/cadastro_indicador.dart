@@ -4,11 +4,14 @@ import 'package:flutter/material.dart';
 
 import '../../core/theme/app_tokens.dart';
 import '../../models/domain.dart';
+import '../../models/indicador.dart';
+import '../../services/indicador_service.dart';
 
 class CadastroIndicadorPage extends StatefulWidget {
   final ValueChanged<Indicador>? onSaved;
+  final IndicadorRest? indicador;
 
-  const CadastroIndicadorPage({super.key, this.onSaved});
+  const CadastroIndicadorPage({super.key, this.onSaved, this.indicador});
 
   @override
   State<CadastroIndicadorPage> createState() => _CadastroIndicadorPageState();
@@ -21,12 +24,20 @@ class _CadastroIndicadorPageState extends State<CadastroIndicadorPage> {
   final urlController = TextEditingController();
   bool salvando = false;
 
+  bool get editando => widget.indicador != null;
+
   @override
   void initState() {
     super.initState();
     nomeController.addListener(_atualizarPreview);
     descricaoController.addListener(_atualizarPreview);
     urlController.addListener(_atualizarPreview);
+    final indicador = widget.indicador;
+    if (indicador != null) {
+      nomeController.text = indicador.nome;
+      descricaoController.text = indicador.descricao;
+      urlController.text = indicador.url;
+    }
   }
 
   void _atualizarPreview() => setState(() {});
@@ -66,8 +77,8 @@ class _CadastroIndicadorPageState extends State<CadastroIndicadorPage> {
     if (uri == null ||
         !uri.hasScheme ||
         !uri.hasAuthority ||
-        uri.scheme != 'https') {
-      return 'use uma url https válida';
+        (uri.scheme != 'http' && uri.scheme != 'https')) {
+      return 'use uma url http ou https válida';
     }
     return null;
   }
@@ -77,33 +88,28 @@ class _CadastroIndicadorPageState extends State<CadastroIndicadorPage> {
     if (!(formKey.currentState?.validate() ?? false)) return;
 
     setState(() => salvando = true);
-    await Future<void>.delayed(const Duration(milliseconds: 500));
-
-    final indicador = Indicador(
-      id: DateTime.now().millisecondsSinceEpoch,
+    final indicador = IndicadorRest(
+      id: widget.indicador?.id,
       nome: nomeController.text.trim().toLowerCase(),
       descricao: descricaoController.text.trim().toLowerCase(),
       url: urlController.text.trim(),
-      tipoInformacao: const TipoInformacao(
-        id: 99,
-        nome: 'indicador personalizado',
-        unidadeMedida: UnidadeMedida(id: 99, nome: 'unidade', simbolo: 'u'),
-      ),
-      metaValor: 0,
-      comparacaoIdeal: TipoComparacao.faixaIdeal,
     );
-
-    if (!mounted) return;
-    setState(() => salvando = false);
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(
-        content: Text('indicador cadastrado com sucesso.'),
-        behavior: SnackBarBehavior.floating,
-        backgroundColor: AppColors.mineralSoft,
-      ),
-    );
-    await Future<void>.delayed(const Duration(milliseconds: 700));
-    if (mounted) Navigator.of(context).pop(indicador);
+    try {
+      final service = IndicadorService();
+      if (editando) {
+        await service.editar(indicador);
+      } else {
+        await service.criar(indicador);
+      }
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(editando ? 'indicador atualizado com sucesso.' : 'indicador cadastrado com sucesso.'), behavior: SnackBarBehavior.floating, backgroundColor: AppColors.mineralSoft));
+      await Future<void>.delayed(const Duration(milliseconds: 350));
+      if (mounted) Navigator.of(context).pop(true);
+    } catch (error) {
+      if (mounted) ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(error.toString()), behavior: SnackBarBehavior.floating, backgroundColor: AppColors.critical));
+    } finally {
+      if (mounted) setState(() => salvando = false);
+    }
   }
 
   @override
@@ -119,8 +125,8 @@ class _CadastroIndicadorPageState extends State<CadastroIndicadorPage> {
           icon: const Icon(Icons.arrow_back_rounded),
           onPressed: () => Navigator.of(context).pop(),
         ),
-        title: const Text(
-          'novo indicador',
+        title: Text(
+          editando ? 'editar indicador' : 'novo indicador',
           style: TextStyle(fontSize: 14, fontWeight: FontWeight.w600),
         ),
         actions: [
@@ -147,7 +153,7 @@ class _CadastroIndicadorPageState extends State<CadastroIndicadorPage> {
               child: ListView(
                 padding: const EdgeInsets.fromLTRB(20, 12, 20, 34),
                 children: [
-                  const _PageIntro(),
+                  _PageIntro(editando: editando),
                   const SizedBox(height: 22),
                   _PreviewCard(
                     nome: nomeController.text,
@@ -212,11 +218,11 @@ class _CadastroIndicadorPageState extends State<CadastroIndicadorPage> {
                     ],
                   ),
                   const SizedBox(height: 28),
-                  _SaveButton(salvando: salvando, onPressed: salvar),
+                  _SaveButton(salvando: salvando, editando: editando, onPressed: salvar),
                   const SizedBox(height: 15),
                   Center(
                     child: Text(
-                      'os dados ficam nesta sessão por enquanto.',
+                      'o indicador será persistido na api configurada.',
                       style: TextStyle(
                         color: Colors.white.withValues(alpha: .38),
                         fontSize: 10,
@@ -287,14 +293,15 @@ class _GlowOrb extends StatelessWidget {
 }
 
 class _PageIntro extends StatelessWidget {
-  const _PageIntro();
+  final bool editando;
+  const _PageIntro({required this.editando});
 
   @override
-  Widget build(BuildContext context) => const Column(
+  Widget build(BuildContext context) => Column(
     crossAxisAlignment: CrossAxisAlignment.start,
     children: [
       Text(
-        'cadastro de indicador',
+        editando ? 'edição de indicador' : 'cadastro de indicador',
         style: TextStyle(
           color: AppColors.moss,
           fontSize: 12,
@@ -514,9 +521,10 @@ class _GlassField extends StatelessWidget {
 
 class _SaveButton extends StatelessWidget {
   final bool salvando;
+  final bool editando;
   final VoidCallback onPressed;
 
-  const _SaveButton({required this.salvando, required this.onPressed});
+  const _SaveButton({required this.salvando, required this.editando, required this.onPressed});
 
   @override
   Widget build(BuildContext context) => SizedBox(
@@ -534,7 +542,7 @@ class _SaveButton extends StatelessWidget {
             )
           : const Icon(Icons.check_rounded, size: 19),
       label: Text(
-        salvando ? 'salvando...' : 'salvar indicador',
+        salvando ? 'salvando...' : editando ? 'salvar alterações' : 'salvar indicador',
         style: const TextStyle(fontWeight: FontWeight.w700, fontSize: 13),
       ),
       style: ElevatedButton.styleFrom(

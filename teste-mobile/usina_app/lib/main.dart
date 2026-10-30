@@ -8,6 +8,7 @@ import 'models/domain.dart';
 import 'screens/cadastro_screen.dart';
 import 'screens/cadastros/cadastro_indicador.dart';
 import 'screens/cadastros/cadastro_usuario.dart';
+import 'screens/cadastros/indicadores_page.dart';
 import 'screens/dashboard_screen.dart';
 import 'screens/login_page.dart';
 import 'screens/power_bi_screen.dart';
@@ -40,6 +41,7 @@ class UsinaApp extends StatelessWidget {
         '/power-bi': (_) => const PowerBiScreen(),
         '/cadastro/indicador': (_) => const CadastroIndicadorPage(),
         '/cadastro/usuario': (_) => const CadastroUsuarioPage(),
+        '/indicadores': (_) => const IndicadoresPage(),
         for (final entry in cadastros.entries)
           '/cadastro/${entry.key}': (_) => CadastroScreen(config: entry.value),
       },

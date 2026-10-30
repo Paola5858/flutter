@@ -6,9 +6,12 @@ import '../models/domain.dart';
 import '../models/usuario.dart';
 import '../services/session_storage.dart';
 import '../widgets/indicador_card.dart';
-import 'cadastros/cadastro_indicador.dart';
 import 'cadastros/cadastro_usuario.dart';
 import 'cadastros/crud_page.dart';
+import 'cadastros/indicadores_page.dart';
+import 'cadastros/indicador_webview.dart';
+import '../models/indicador.dart';
+import '../services/indicador_service.dart';
 import 'power_bi_screen.dart';
 
 class DashboardScreen extends StatefulWidget {
@@ -57,6 +60,10 @@ class _DashboardScreenState extends State<DashboardScreen> {
         child: _MenuPrincipal(
           itemSelecionado: itemSelecionado,
           onLogout: _sair,
+          onIndicatorSelected: (indicador) async {
+            Navigator.of(context).pop();
+            await Navigator.of(context).push<void>(MaterialPageRoute(builder: (_) => IndicadorWebView(indicador: indicador)));
+          },
           onItemSelected: (item) async {
             Navigator.of(context).pop();
             if (item == 'power bi') {
@@ -88,20 +95,10 @@ class _DashboardScreenState extends State<DashboardScreen> {
             }
             if (item == 'indicador') {
               setState(() => itemSelecionado = item);
-              final indicador = await Navigator.of(context).push<Indicador>(
+              await Navigator.of(context).push<void>(
                 MaterialPageRoute(
-                  settings: const RouteSettings(name: '/cadastro/indicador'),
-                  builder: (_) => const CadastroIndicadorPage(),
-                ),
-              );
-              if (!context.mounted || indicador == null) return;
-              ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(
-                  content: Text(
-                    '${indicador.nome} entrou na sua central de indicadores.',
-                  ),
-                  behavior: SnackBarBehavior.floating,
-                  backgroundColor: const Color(0xff2c6149),
+                  settings: const RouteSettings(name: '/indicadores'),
+                  builder: (_) => const IndicadoresPage(),
                 ),
               );
               return;
@@ -227,10 +224,12 @@ class _DashboardScreenState extends State<DashboardScreen> {
 class _MenuPrincipal extends StatefulWidget {
   final String itemSelecionado;
   final VoidCallback onLogout;
+  final ValueChanged<IndicadorRest> onIndicatorSelected;
   final ValueChanged<String> onItemSelected;
   const _MenuPrincipal({
     required this.itemSelecionado,
     required this.onLogout,
+    required this.onIndicatorSelected,
     required this.onItemSelected,
   });
 
@@ -240,6 +239,13 @@ class _MenuPrincipal extends StatefulWidget {
 
 class _MenuPrincipalState extends State<_MenuPrincipal> {
   bool cadastroAberto = false;
+  late Future<List<IndicadorRest>> _indicadoresFuture;
+
+  @override
+  void initState() {
+    super.initState();
+    _indicadoresFuture = IndicadorService().listar();
+  }
 
   static const itensCadastro = [
     ('safra', Icons.calendar_month_outlined),
@@ -322,6 +328,12 @@ class _MenuPrincipalState extends State<_MenuPrincipal> {
               ),
               secondChild: const SizedBox.shrink(),
             ),
+            const SizedBox(height: 22),
+            _IndicadoresMenuSection(
+              future: _indicadoresFuture,
+              onManage: () => widget.onItemSelected('indicador'),
+              onOpen: widget.onIndicatorSelected,
+            ),
             const SizedBox(height: 28),
             Container(
               padding: const EdgeInsets.all(15),
@@ -373,6 +385,35 @@ class _MenuPrincipalState extends State<_MenuPrincipal> {
 
   @override
   Widget build(BuildContext context) => montarMenu();
+}
+
+class _IndicadoresMenuSection extends StatelessWidget {
+  final Future<List<IndicadorRest>> future;
+  final VoidCallback onManage;
+  final ValueChanged<IndicadorRest> onOpen;
+  const _IndicadoresMenuSection({required this.future, required this.onManage, required this.onOpen});
+
+  @override
+  Widget build(BuildContext context) => FutureBuilder<List<IndicadorRest>>(
+        future: future,
+        builder: (context, snapshot) {
+          final indicadores = snapshot.data ?? const <IndicadorRest>[];
+          return Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const _MenuSectionLabel(label: 'indicadores'),
+              const SizedBox(height: 8),
+              if (snapshot.connectionState == ConnectionState.waiting)
+                const Padding(padding: EdgeInsets.symmetric(horizontal: 13, vertical: 10), child: LinearProgressIndicator(minHeight: 2))
+              else if (indicadores.isEmpty)
+                const Padding(padding: EdgeInsets.symmetric(horizontal: 13, vertical: 7), child: Text('nenhum indicador carregado', style: TextStyle(color: Color(0xff718079), fontSize: 10)))
+              else
+                ...indicadores.take(4).map((indicador) => _MenuSubItem(icon: Icons.insights_outlined, label: indicador.nome, selected: false, onTap: () => onOpen(indicador))),
+              _MenuItem(icon: Icons.settings_suggest_outlined, label: 'gerenciar indicadores', selected: false, onTap: onManage),
+            ],
+          );
+        },
+      );
 }
 
 class _SessionCard extends StatelessWidget {

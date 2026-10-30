@@ -2,19 +2,8 @@ import 'dart:convert';
 
 import 'package:http/http.dart' as http;
 
-class ApiConfig {
-  static const baseUrl = String.fromEnvironment(
-    'USINA_API_BASE_URL',
-    defaultValue: 'http://10.0.2.2:1880',
-  );
-
-  static const safras = '/api/safras';
-  static const unidades = '/api/unidades';
-  static const unidadesMedida = '/api/unidadesmedida';
-  static const equipamentos = '/api/equipamentos';
-  static const tiposInformacao = '/api/tipoinformacoes';
-  static const medicoes = '/api/medicoes';
-}
+export 'api_config.dart';
+import 'api_config.dart';
 
 class ApiException implements Exception {
   final String message;
